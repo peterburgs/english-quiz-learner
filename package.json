@@ -18,5 +18,18 @@
   "devDependencies": {
     "@babel/core": "~7.9.0"
   },
-  "private": true
+  "private": true,
+  "name": "english-quiz-learner",
+  "version": "1.0.0",
+  "description": "An application for Vietnamese people to learn English ",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterburgs/english-quiz-learner.git"
+  },
+  "author": "Peter Burgs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/peterburgs/english-quiz-learner/issues"
+  },
+  "homepage": "https://github.com/peterburgs/english-quiz-learner#readme"
 }
