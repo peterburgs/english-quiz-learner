@@ -10,44 +10,41 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+
 import { NavigationEvents } from "react-navigation";
-import { Context as AuthContext } from "../context/AuthContext";
 import AuthForm from "../components/AuthForm";
 import NavLink from "../components/NavLink";
-
-// Get Width & Height
-const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+import { Context } from "../context/AuthContext";
 
 // App
-const SignupScreen = () => {
-  const { state, signup, clearErrorMessage } = useContext(
-    AuthContext
-  );
-
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+const SignInScreen = () => {
+  const { state, signin, clearErrorMessage } = useContext(Context);
   return (
     <SafeAreaView style={styles.container}>
       <NavigationEvents onWillFocus={clearErrorMessage} />
-      <View>
-        <Text style={styles.appName}> English Quiz</Text>
+      <View style={styles.backgroundContainer}>
+        <View>
+          <Text style={styles.appName}> English Quiz</Text>
+        </View>
+        <AuthForm
+          headerText="Sign In to Your Account"
+          errorMessage={state.errorMessage}
+          onSubmit={signin}
+          submitButtonText="Sign In"
+        />
+
+        <NavLink
+          routeName="Signup"
+          text="New to English Quiz? Sign up now!"
+        />
       </View>
-      <AuthForm
-        errorMessage={state.errorMessage}
-        submitButtonText="Sign Up"
-        onSubmit={signup}
-      />
-      <NavLink
-        routeName="Signin"
-        text="Already have an account? Sign in instead!"
-      />
     </SafeAreaView>
   );
 };
 
-// Navigation Options
-SignupScreen.navigationOptions = () => {
-  return {
-    header: () => false,
-  };
+SignInScreen.navigationOptions = {
+  header: () => false,
 };
 
 const styles = StyleSheet.create({
@@ -111,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupScreen;
+export default SignInScreen;
