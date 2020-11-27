@@ -11,6 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import PropTypes from "prop-types";
+
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
 const AuthForm = ({ errorMessage, onSubmit, submitButtonText }) => {
@@ -100,6 +102,11 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 15,
   },
+  footageImage: {
+    height: "50%",
+    width: "100%",
+    top: 0.707 * HEIGHT,
+  },
   input: {
     fontSize: 17,
     width: WIDTH - 20,
@@ -135,5 +142,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+AuthForm.propTypes = {
+  errorMessage: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  submitButtonText: PropTypes.string.isRequired,
+};
 
 export default AuthForm;

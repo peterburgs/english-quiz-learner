@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import PropTypes from "prop-types";
 import Spacer from "./Spacer";
 import { withNavigation } from "react-navigation";
 
@@ -20,5 +21,9 @@ const styles = StyleSheet.create({
     color: "#d35d6e",
   },
 });
-
-export default NavLink;
+NavLink.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  text: PropTypes.string.isRequired,
+  routeName: PropTypes.string.isRequired,
+};
+export default withNavigation(NavLink);

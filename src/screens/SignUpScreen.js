@@ -3,11 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  ImageBackground,
-  Image,
-  TextInput,
   Dimensions,
-  TouchableOpacity,
   SafeAreaView,
 } from "react-native";
 import { NavigationEvents } from "react-navigation";
