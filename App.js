@@ -5,77 +5,46 @@ import {
 } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from "react-native";
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen";
+import { Feather } from "@expo/vector-icons";
 
 // Import Screens
-import SignUpScreen from "./src/screens/SignUpScreen";
-
+import SignupScreen from "./src/screens/SignupScreen";
+import SigninScreen from "./src/screens/SigninScreen";
+import HomeScreen from "./src/screens/HomeScreen";
 // Import Context
+import { Provider as AuthProvider } from "./src/context/AuthContext";
 
-// Navigator
-// const switchNavigator = createSwitchNavigator({});
+import { setNavigator } from "./src/common/navigationRef";
+import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 
-// App
-const App = () => {
-  return (
-    <>
-      <SignUpScreen />
-    </>
-  );
+const homeFlow = createStackNavigator({ Home: HomeScreen });
+
+homeFlow.navigationOptions = {
+  title: "Tracks",
+  tabBarIcon: <Feather name="map-pin" size={24} color="black" />,
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: "absolute",
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: "400",
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: "700",
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: "600",
-    padding: 4,
-    paddingRight: 12,
-    textAlign: "right",
-  },
+const switchNavigator = createSwitchNavigator({
+  ResolveAuth: ResolveAuthScreen,
+  loginFlow: createStackNavigator({
+    Signup: SignupScreen,
+    Signin: SigninScreen,
+  }),
+  mainFlow: createBottomTabNavigator({
+    homeFlow,
+  }),
 });
+// App
+const App = createAppContainer(switchNavigator);
 
-export default App;
+export default () => {
+  return (
+    <AuthProvider>
+      <App
+        ref={(navigator) => {
+          setNavigator(navigator);
+        }}
+      />
+    </AuthProvider>
+  );
+};
