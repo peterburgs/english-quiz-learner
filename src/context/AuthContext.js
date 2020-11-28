@@ -36,11 +36,18 @@ const clearErrorMessage = (dispatch) => () => {
 // Sign Up
 const signup = (dispatch) => async ({ email, password }) => {
   try {
+    console.log("39");
     const response = await EnglishQuizApi.post("/signup", {
       email,
       password,
+      role: "learner",
+      isActive: true,
     });
+    console.log(response);
+
     await AsyncStorage.setItem("token", response.data.token);
+    console.log("49");
+
     dispatch({ type: "signin", payload: response.data.token });
 
     navigate("Home");
