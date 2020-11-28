@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Feather } from "@expo/vector-icons";
 
 // Import Screens
-import SignupScreen from "./src/screens/SignapScreen";
+import SignupScreen from "./src/screens/SignupScreen";
 import SigninScreen from "./src/screens/SigninScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 // Import Context
