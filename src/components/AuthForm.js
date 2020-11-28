@@ -103,8 +103,7 @@ const AuthForm = ({ errorMessage, onSubmit, submitButtonText }) => {
             disabledTitleStyle={{ color: "#00F" }}
             loadingProps={{ animating: true }}
             title={" " + submitButtonText}
-            // onPress={() => onSubmit({ email, password })}
-            onPress={() => console.log("click")}
+            onPress={() => onSubmit({ email, password })}
           />
         </Spacer>
       </View>

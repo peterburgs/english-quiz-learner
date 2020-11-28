@@ -1,11 +1,13 @@
-import React from "react";
-import { Text, SafeAreaView } from "react-native";
+import React, { useContext } from "react";
+import { SafeAreaView, Button } from "react-native";
+import { Context } from "../context/AuthContext";
 
 // App
 const HomeScreen = () => {
+  const { signout } = useContext(Context);
   return (
     <SafeAreaView>
-      <Text>Home Screen</Text>
+      <Button title={"Log Out"} onPress={signout} />
     </SafeAreaView>
   );
 };
