@@ -24,7 +24,7 @@ const tryLocalSignin = (dispatch) => async () => {
   const token = await AsyncStorage.getItem("token");
   if (token) {
     dispatch({ type: "signin", payload: token });
-    navigate("TrackList");
+    navigate("Home");
   } else {
     navigate("Signup");
   }
