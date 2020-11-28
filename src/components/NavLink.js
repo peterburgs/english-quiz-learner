@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   link: {
     fontSize: 13,
     alignSelf: "center",
-    color: "#d35d6e",
+    color: "#0f3460",
   },
 });
 NavLink.propTypes = {

@@ -21,7 +21,7 @@ import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 const homeFlow = createStackNavigator({ Home: HomeScreen });
 
 homeFlow.navigationOptions = {
-  title: "Tracks",
+  title: "Home",
   tabBarIcon: <Feather name="map-pin" size={24} color="black" />,
 };
 
