@@ -48,6 +48,12 @@ const signup = (dispatch) => async ({ email, password }) => {
     dispatch({
       type: "toggle_is_touchable",
     });
+    console.log(
+      "*Log at client when send request: ",
+      email,
+      password
+    );
+
     const response = await EnglishQuizApi.post("/signup", {
       email,
       password,
@@ -127,5 +133,5 @@ export const { Provider, Context } = createDataContext(
     clearErrorMessage,
     tryLocalSignin,
   },
-  { token: null, errorMessage: "" }
+  { token: null, errorMessage: "", isTouchable: false }
 );
