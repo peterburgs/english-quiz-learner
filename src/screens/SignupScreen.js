@@ -29,6 +29,8 @@ const SignupScreen = () => {
         errorMessage={state.errorMessage}
         submitButtonText="Sign Up"
         onSubmit={signup}
+        isLoading={state.isLoading}
+        isTouchable={state.isTouchable}
       />
       <NavLink
         routeName="Signin"
