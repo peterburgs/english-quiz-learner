@@ -91,7 +91,7 @@ const AuthForm = ({
         {/* Submit Button */}
         <TouchableOpacity
           style={styles.submitButton}
-          onPress={() => onSubmit(email, password)}
+          onPress={() => onSubmit({ email, password })}
           disabled={isTouchable}
         >
           {isLoading == true ? (
