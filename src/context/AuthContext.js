@@ -11,7 +11,11 @@ const authReducer = (state, action) => {
     case "signin":
       return { errorMessage: "", token: action.payload };
     case "clear_error_message":
-      return { ...state, errorMessage: "" };
+      return { ...state, errorMessage: "", isLoading: false };
+    case "toggle_is_loading":
+      return { ...state, isLoading: !state.isLoading };
+    case "toggle_is_touchable":
+      return { ...state, isTouchable: !state.isTouchable };
     case "signout":
       return { token: null, errorMessage: "" };
     default:
@@ -29,32 +33,45 @@ const tryLocalSignin = (dispatch) => async () => {
     navigate("Signup");
   }
 };
+// Clear Error Message
 const clearErrorMessage = (dispatch) => () => {
-  dispatch({ type: "clear_error_message" });
+  dispatch({
+    type: "clear_error_message",
+  });
 };
-
 // Sign Up
 const signup = (dispatch) => async ({ email, password }) => {
   try {
-    console.log("39");
+    dispatch({
+      type: "toggle_is_loading",
+    });
+    dispatch({
+      type: "toggle_is_touchable",
+    });
     const response = await EnglishQuizApi.post("/signup", {
       email,
       password,
       role: "learner",
       isActive: true,
     });
-    console.log(response);
 
     await AsyncStorage.setItem("token", response.data.token);
-    console.log("49");
 
     dispatch({ type: "signin", payload: response.data.token });
 
     navigate("Home");
   } catch (err) {
+    console.log("*LOG at AuthContext: ", err);
+
+    dispatch({
+      type: "toggle_is_loading",
+    });
+    dispatch({
+      type: "toggle_is_touchable",
+    });
     dispatch({
       type: "add_error",
-      payload: "Something went wrong with sign up",
+      payload: err.toString(),
     });
   }
 };
@@ -62,6 +79,15 @@ const signup = (dispatch) => async ({ email, password }) => {
 // Sign In
 const signin = (dispatch) => async ({ email, password }) => {
   try {
+    dispatch({
+      type: "clear_error_message",
+    });
+    dispatch({
+      type: "toggle_is_loading",
+    });
+    dispatch({
+      type: "toggle_is_touchable",
+    });
     const response = await EnglishQuizApi.post("/signin", {
       email,
       password,
@@ -70,9 +96,16 @@ const signin = (dispatch) => async ({ email, password }) => {
     dispatch({ type: "signin", payload: response.data.token });
     navigate("Home");
   } catch (err) {
+    console.log("*LOG at AuthContext: ", err);
+    dispatch({
+      type: "toggle_is_loading",
+    });
+    dispatch({
+      type: "toggle_is_touchable",
+    });
     dispatch({
       type: "add_error",
-      payload: "Something went wrong with sign in",
+      payload: err.toString(),
     });
   }
 };
@@ -87,6 +120,12 @@ const signout = (dispatch) => async () => {
 // Export
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signin, signout, signup, clearErrorMessage, tryLocalSignin },
+  {
+    signin,
+    signout,
+    signup,
+    clearErrorMessage,
+    tryLocalSignin,
+  },
   { token: null, errorMessage: "" }
 );

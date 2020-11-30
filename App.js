@@ -28,8 +28,8 @@ homeFlow.navigationOptions = {
 const switchNavigator = createSwitchNavigator({
   ResolveAuth: ResolveAuthScreen,
   loginFlow: createStackNavigator({
-    Signup: SignupScreen,
     Signin: SigninScreen,
+    Signup: SignupScreen,
   }),
   mainFlow: createBottomTabNavigator({
     homeFlow,

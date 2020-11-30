@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { Input, Button } from "react-native-elements";
-import Spacer from "./Spacer";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
+import { PacmanIndicator } from "react-native-indicators";
+const { width: WIDTH } = Dimensions.get("screen");
 
-const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-
-const AuthForm = ({ errorMessage, onSubmit, submitButtonText }) => {
+const AuthForm = ({
+  errorMessage,
+  onSubmit,
+  submitButtonText,
+  isLoading,
+  isTouchable,
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(true);
@@ -85,27 +89,23 @@ const AuthForm = ({ errorMessage, onSubmit, submitButtonText }) => {
           <Text style={styles.errorMessage}>{errorMessage}</Text>
         ) : null}
         {/* Submit Button */}
-        <Spacer>
-          <Button
-            icon={<Icon name="arrow-right" size={15} color="white" />}
-            iconLeft
-            buttonStyle={{
-              width: WIDTH / 3,
-              alignSelf: "center",
-              borderRadius: 20,
-            }}
-            containerStyle={{ marginHorizontal: 5 }}
-            color="#0278ae"
-            disabledStyle={{
-              borderWidth: 2,
-              borderColor: "#00F",
-            }}
-            disabledTitleStyle={{ color: "#00F" }}
-            loadingProps={{ animating: true }}
-            title={" " + submitButtonText}
-            onPress={() => onSubmit({ email, password })}
-          />
-        </Spacer>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => onSubmit(email, password)}
+          disabled={isTouchable}
+        >
+          {isLoading == true ? (
+            <PacmanIndicator
+              hidesWhenStopped={true}
+              animating={isLoading}
+              color="#eeeded"
+            />
+          ) : (
+            <Text style={styles.submitButtonText}>
+              {submitButtonText}
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -115,11 +115,26 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 50,
   },
+  submitButton: {
+    backgroundColor: "#07689f",
+    width: WIDTH / 3,
+    height: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 19,
+    alignSelf: "center",
+  },
   errorMessage: {
     fontSize: 16,
     color: "red",
-    marginLeft: 15,
-    marginTop: 15,
+    marginBottom: 15,
+    marginHorizontal: 10,
+    alignSelf: "center",
   },
 
   input: {
