@@ -4,11 +4,10 @@ import {
   Text,
   View,
   Dimensions,
-  SafeAreaView,
   ImageBackground,
 } from "react-native";
 
-import { NavigationEvents } from "react-navigation";
+import { NavigationEvents, SafeAreaView } from "react-navigation";
 import AuthForm from "../components/AuthForm";
 import NavLink from "../components/NavLink";
 import { Context } from "../context/AuthContext";
@@ -18,7 +17,10 @@ const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 const SignInScreen = () => {
   const { state, signin, clearErrorMessage } = useContext(Context);
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      forceInset={{ top: "always" }}
+      style={styles.container}
+    >
       <NavigationEvents onWillFocus={clearErrorMessage} />
       <View style={styles.backgroundContainer}>
         <View>

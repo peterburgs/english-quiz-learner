@@ -2,12 +2,10 @@ import React, { useContext } from "react";
 import {
   StyleSheet,
   Text,
-  View,
   Dimensions,
-  SafeAreaView,
   ImageBackground,
 } from "react-native";
-import { NavigationEvents } from "react-navigation";
+import { NavigationEvents, SafeAreaView } from "react-navigation";
 import { Context as AuthContext } from "../context/AuthContext";
 import AuthForm from "../components/AuthForm";
 import NavLink from "../components/NavLink";
@@ -22,7 +20,10 @@ const SignupScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      forceInset={{ top: "always" }}
+      style={styles.container}
+    >
       <NavigationEvents onWillFocus={clearErrorMessage} />
       <Text style={styles.appName}> English Quiz</Text>
       <AuthForm

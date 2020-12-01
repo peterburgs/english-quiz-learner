@@ -28,7 +28,7 @@ const tryLocalSignin = (dispatch) => async () => {
   const token = await AsyncStorage.getItem("token");
   if (token) {
     dispatch({ type: "signin", payload: token });
-    navigate("Home");
+    navigate("Account");
   } else {
     navigate("Signup");
   }
@@ -65,7 +65,7 @@ const signup = (dispatch) => async ({ email, password }) => {
 
     dispatch({ type: "signin", payload: response.data.token });
 
-    navigate("Home");
+    navigate("Account");
   } catch (err) {
     console.log("*LOG at AuthContext: ", err);
 
@@ -100,7 +100,7 @@ const signin = (dispatch) => async ({ email, password }) => {
     });
     await AsyncStorage.setItem("token", response.data.token);
     dispatch({ type: "signin", payload: response.data.token });
-    navigate("Home");
+    navigate("Account");
   } catch (err) {
     console.log("*LOG at AuthContext: ", err);
     dispatch({
