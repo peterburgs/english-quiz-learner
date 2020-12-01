@@ -9,15 +9,14 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Feather } from "@expo/vector-icons";
 
 // Import Screens
-import SignupScreen from "./src/screens/SignupScreen";
 import SigninScreen from "./src/screens/SigninScreen";
+import SignupScreen from "./src/screens/SignupScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 // Import Context
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 
 import { setNavigator } from "./src/common/navigationRef";
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
-
 const homeFlow = createStackNavigator({ Home: HomeScreen });
 
 homeFlow.navigationOptions = {

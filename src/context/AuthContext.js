@@ -111,7 +111,7 @@ const signin = (dispatch) => async ({ email, password }) => {
     });
     dispatch({
       type: "add_error",
-      payload: err.toString(),
+      payload: "Email or password is invalid",
     });
   }
 };
