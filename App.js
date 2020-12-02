@@ -1,19 +1,19 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import React from "react";
+
+import { Dimensions } from "react-native";
 import {
   createAppContainer,
   createSwitchNavigator,
 } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-
+import { NavigationContainer } from "@react-navigation/native";
+import myTheme from "./src/common/navigationTheme";
 // Import Icons
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
 
 // Import Screens
 import SigninScreen from "./src/screens/SigninScreen";
@@ -28,6 +28,9 @@ import { Provider as AuthProvider } from "./src/context/AuthContext";
 
 import { setNavigator } from "./src/common/navigationRef";
 
+// Get Device Height & Width
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+
 // Topic Flow
 const topicFlow = createStackNavigator({
   Topic: TopicScreen,
@@ -35,7 +38,9 @@ const topicFlow = createStackNavigator({
 topicFlow.navigationOptions = () => {
   return {
     title: "Topics",
-    tabBarIcon: <AntDesign name="book" size={26} color="black" />,
+    tabBarIcon: ({ tintColor }) => (
+      <AntDesign name="book" size={26} color={tintColor} />
+    ),
   };
 };
 
@@ -46,7 +51,9 @@ const accountFlow = createStackNavigator({
 accountFlow.navigationOptions = () => {
   return {
     title: "Account",
-    tabBarIcon: <Feather name="github" size={26} color="black" />,
+    tabBarIcon: ({ tintColor }) => (
+      <Feather name="github" size={26} color={tintColor} />
+    ),
   };
 };
 
@@ -57,8 +64,8 @@ const shopFlow = createStackNavigator({
 shopFlow.navigationOptions = () => {
   return {
     title: "Shop",
-    tabBarIcon: (
-      <Feather name="shopping-cart" size={24} color="black" />
+    tabBarIcon: ({ tintColor }) => (
+      <Feather name="shopping-cart" size={24} color={tintColor} />
     ),
   };
 };
@@ -69,11 +76,32 @@ const switchNavigator = createSwitchNavigator({
     Signup: SignupScreen,
     Signin: SigninScreen,
   }),
-  mainFlow: createBottomTabNavigator({
-    topicFlow,
-    accountFlow,
-    shopFlow,
-  }),
+  mainFlow: createBottomTabNavigator(
+    {
+      topicFlow,
+      accountFlow,
+      shopFlow,
+    },
+    {
+      tabBarOptions: {
+        //activeBackgroundColor: "tomato",
+        activeTintColor: "#ea2c62",
+        // inactiveBackgroundColor: "#eee",
+        inactiveTintColor: "#bbbbbb",
+        style: {
+          borderTopColor: "transparent",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          backgroundColor: "#e8e8e8",
+          position: "absolute",
+          bottom: 0,
+          padding: 10,
+          width: WIDTH,
+          height: 54,
+        },
+      },
+    }
+  ),
 });
 
 // App
@@ -81,12 +109,14 @@ const App = createAppContainer(switchNavigator);
 
 export default () => {
   return (
-    <AuthProvider>
-      <App
-        ref={(navigator) => {
-          setNavigator(navigator);
-        }}
-      />
-    </AuthProvider>
+    <NavigationContainer theme={myTheme}>
+      <AuthProvider>
+        <App
+          ref={(navigator) => {
+            setNavigator(navigator);
+          }}
+        />
+      </AuthProvider>
+    </NavigationContainer>
   );
 };
