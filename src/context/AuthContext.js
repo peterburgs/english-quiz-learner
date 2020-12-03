@@ -28,9 +28,9 @@ const tryLocalSignin = (dispatch) => async () => {
   const token = await AsyncStorage.getItem("token");
   if (token) {
     dispatch({ type: "signin", payload: token });
-    navigate("Account");
+    navigate("mainFlow");
   } else {
-    navigate("Signup");
+    navigate("loginFlow");
   }
 };
 // Clear Error Message
@@ -100,7 +100,7 @@ const signin = (dispatch) => async ({ email, password }) => {
     });
     await AsyncStorage.setItem("token", response.data.token);
     dispatch({ type: "signin", payload: response.data.token });
-    navigate("Account");
+    navigate("mainFlow");
   } catch (err) {
     console.log("*LOG at AuthContext: ", err);
     dispatch({
