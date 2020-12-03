@@ -2,7 +2,7 @@
 /* eslint-disable react/display-name */
 import React from "react";
 
-import { Dimensions } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import {
   createAppContainer,
   createSwitchNavigator,
@@ -25,7 +25,7 @@ import ShopScreen from "./src/screens/ShopScreen";
 
 // Import Context
 import { Provider as AuthProvider } from "./src/context/AuthContext";
-
+import { Provider as UserProvider } from "./src/context/UserContext";
 import { setNavigator } from "./src/common/navigationRef";
 
 // Get Device Height & Width
@@ -37,7 +37,7 @@ const topicFlow = createStackNavigator({
 });
 topicFlow.navigationOptions = () => {
   return {
-    title: "Topics",
+    title: "Topic",
     tabBarIcon: ({ tintColor }) => (
       <AntDesign name="book" size={26} color={tintColor} />
     ),
@@ -70,39 +70,44 @@ shopFlow.navigationOptions = () => {
   };
 };
 
-const switchNavigator = createSwitchNavigator({
-  ResolveAuth: ResolveAuthScreen,
-  loginFlow: createStackNavigator({
-    Signup: SignupScreen,
-    Signin: SigninScreen,
-  }),
-  mainFlow: createBottomTabNavigator(
-    {
-      topicFlow,
-      accountFlow,
-      shopFlow,
-    },
-    {
-      tabBarOptions: {
-        //activeBackgroundColor: "tomato",
-        activeTintColor: "#ea2c62",
-        // inactiveBackgroundColor: "#eee",
-        inactiveTintColor: "#bbbbbb",
-        style: {
-          borderTopColor: "transparent",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          backgroundColor: "#e8e8e8",
-          position: "absolute",
-          bottom: 0,
-          padding: 10,
-          width: WIDTH,
-          height: 54,
-        },
+const switchNavigator = createSwitchNavigator(
+  {
+    ResolveAuth: ResolveAuthScreen,
+    loginFlow: createStackNavigator(
+      {
+        Signin: SigninScreen,
+        Signup: SignupScreen,
       },
-    }
-  ),
-});
+      { initialRouteName: "Signin" }
+    ),
+
+    mainFlow: createBottomTabNavigator(
+      { topicFlow, accountFlow, shopFlow },
+
+      {
+        tabBarOptions: {
+          //activeBackgroundColor: "tomato",
+          activeTintColor: "#1b6ca8",
+          // inactiveBackgroundColor: "#eee",
+          inactiveTintColor: "#bbbbbb",
+          style: {
+            borderTopColor: "transparent",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            backgroundColor: "#e8e8e8",
+            position: "absolute",
+            bottom: 0,
+            padding: 10,
+            width: WIDTH,
+            height: 54,
+          },
+        },
+        initialRouteName: "topicFlow",
+      }
+    ),
+  },
+  { initialRouteName: "mainFlow" }
+);
 
 // App
 const App = createAppContainer(switchNavigator);
@@ -111,11 +116,13 @@ export default () => {
   return (
     <NavigationContainer theme={myTheme}>
       <AuthProvider>
-        <App
-          ref={(navigator) => {
-            setNavigator(navigator);
-          }}
-        />
+        <UserProvider>
+          <App
+            ref={(navigator) => {
+              setNavigator(navigator);
+            }}
+          />
+        </UserProvider>
       </AuthProvider>
     </NavigationContainer>
   );
