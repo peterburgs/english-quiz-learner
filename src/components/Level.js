@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import Topic from "./Topic";
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
-const Level = () => {
+const Level = ({ onPress }) => {
   const levelTitle = "Level 1";
   return (
     <View style={styles.container}>
@@ -12,8 +13,8 @@ const Level = () => {
       <Text style={styles.title}>{levelTitle}</Text>
       {/* List of Topic */}
       <View style={styles.topicContainer}>
-        <Topic />
-        <Topic />
+        <Topic onPress={onPress} />
+        <Topic onPress={onPress} />
       </View>
     </View>
   );

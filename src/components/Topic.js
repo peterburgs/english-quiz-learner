@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import {
   Image,
@@ -14,13 +15,13 @@ const newColor = "#D9D7D7";
 const topicTitle = "Food";
 
 // Component
-const Topic = () => {
+const Topic = ({ onPress }) => {
   return (
     <View style={styles.container}>
       {/* Topic Image */}
       <TouchableOpacity
         style={styles.imageContainer}
-        onPress={() => console.log("Topic Component")}
+        onPress={onPress}
       >
         <Image
           source={require("../../assets/hamburger.png")}
