@@ -81,6 +81,8 @@ const TopicHeader = () => {
 function format(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+// Export
 export default TopicHeader;
 
 const styles = StyleSheet.create({
