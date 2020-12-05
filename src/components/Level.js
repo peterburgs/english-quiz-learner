@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import Topic from "./Topic";
 
-const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+const { width: WIDTH } = Dimensions.get("screen");
 
 const Level = ({ onPress }) => {
   const levelTitle = "Level 1";
