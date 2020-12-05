@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 // Import Icons
@@ -9,8 +9,12 @@ import { FontAwesome5 } from "@expo/vector-icons";
 // Context
 
 import { Context as UserContext } from "../context/UserContext";
+
 const TopicHeader = () => {
-  const { state } = useContext(UserContext);
+  const { state, getUser } = useContext(UserContext);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <View
@@ -27,9 +31,10 @@ const TopicHeader = () => {
             alignSelf: "center",
             fontWeight: "bold",
             color: "#ffa41b",
+            marginLeft: 5,
           }}
         >
-          {" " + state.coin}
+          {state.user ? format(state.user.coin) : 0}
         </Text>
       </View>
 
@@ -47,7 +52,7 @@ const TopicHeader = () => {
             color: "#29c7ac",
           }}
         >
-          {state.exp}
+          {state.user ? format(state.user.exp) : 0}
         </Text>
       </View>
 
@@ -65,13 +70,19 @@ const TopicHeader = () => {
             color: "#f64b3c",
           }}
         >
-          {state.streak}
+          {state.user ? format(state.user.streak) : 0}
         </Text>
       </View>
     </View>
   );
 };
 
+// Format number
+function format(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// Export
 export default TopicHeader;
 
 const styles = StyleSheet.create({

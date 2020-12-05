@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import React, { useState } from "react";
-import { SafeAreaView } from "react-navigation";
 
 // Import components
 import TopicHeader from "../components/TopicHeader";
@@ -12,7 +11,6 @@ import {
   Text,
   View,
   Modal,
-  Alert,
   TouchableHighlight,
 } from "react-native";
 // Context
@@ -124,4 +122,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 export default TopicScreen;
