@@ -48,16 +48,10 @@ const signup = (dispatch) => async ({ email, password }) => {
     dispatch({
       type: "toggle_is_touchable",
     });
-    console.log(
-      "*Log at client when send request: ",
-      email,
-      password
-    );
-
     const response = await EnglishQuizApi.post("/signup", {
       email,
       password,
-      role: "learner",
+      role: 2,
       isActive: true,
     });
 

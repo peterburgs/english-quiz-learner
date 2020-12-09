@@ -6,10 +6,7 @@ import EnglishQuizApi from "../api/EnglishQuizApi";
 const userReducer = (state, action) => {
   switch (action.type) {
     case "get_user":
-      return {
-        ...state,
-        user: action.payload,
-      };
+      return { ...state, user: action.payload };
     default:
       return state;
   }
@@ -17,7 +14,7 @@ const userReducer = (state, action) => {
 
 const getUser = (dispatch) => async () => {
   try {
-    const response = await EnglishQuizApi.get("/user");
+    const response = await EnglishQuizApi.get("/users");
 
     console.log("response.data.user:\n", response.data.user);
     dispatch({
