@@ -1,10 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/display-name */
-import React, { useState } from "react";
-
-// Import components
-import TopicHeader from "../components/TopicHeader";
-import Level from "../components/Level";
+import React, { useState, useEffect, useContext } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -13,23 +7,14 @@ import {
   Modal,
   TouchableHighlight,
 } from "react-native";
-// Context
+// Import components
+import TopicHeader from "../components/TopicHeader";
+import Level from "../components/Level";
 
-// Mock data
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
+// Context
+import { Context as LevelContext } from "../context/LevelContext";
+import { Context as UserContext } from "../context/UserContext";
+import color from "../common/color";
 
 // Topic Screen
 const TopicScreen = () => {
@@ -37,6 +22,11 @@ const TopicScreen = () => {
   const handleTopic = () => {
     setModalVisible(true);
   };
+  const { state, getLevels } = useContext(LevelContext);
+  const userContext = useContext(UserContext);
+  useEffect(() => {
+    getLevels();
+  }, []);
   return (
     <View>
       <Modal
@@ -67,11 +57,42 @@ const TopicScreen = () => {
       </Modal>
       <FlatList
         contentInset={{ bottom: 60 }}
-        data={DATA}
-        renderItem={() => {
-          return <Level onPress={handleTopic} />;
+        data={state.level}
+        renderItem={({ item }) => {
+          return (
+            <Level
+              onPress={handleTopic}
+              // topics={item.topics}
+              level={item}
+              pointerEvents={
+                userContext.state.user
+                  ? userContext.state.user.currentLevelOrder >=
+                    item.order
+                    ? "auto"
+                    : "none"
+                  : "auto"
+                // TODO: display modal when users tap on unreached topics
+              }
+              backgroundColor={
+                userContext.state.user
+                  ? userContext.state.user.currentLevelOrder >=
+                    item.order
+                    ? color.topicContainerEnabled
+                    : color.topicContainerDisabled
+                  : color.topicContainerEnabled
+              }
+              topicTitleColor={
+                userContext.state.user
+                  ? userContext.state.user.currentLevelOrder >=
+                    item.order
+                    ? color.topicColorEnabled
+                    : color.topicColorDisabled
+                  : color.topicColorEnabled
+              }
+            />
+          );
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={{ paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
       />
@@ -112,8 +133,8 @@ const styles = StyleSheet.create({
   },
   openButton: {
     backgroundColor: "#F194FF",
-    borderRadius: 20,
-    padding: 10,
+    borderRadius: 12,
+    padding: 8,
     elevation: 2,
   },
   textStyle: {

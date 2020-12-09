@@ -9,7 +9,11 @@ const authReducer = (state, action) => {
     case "add_error":
       return { ...state, errorMessage: action.payload };
     case "signin":
-      return { errorMessage: "", token: action.payload };
+      return {
+        ...state,
+        errorMessage: "",
+        token: action.payload.token,
+      };
     case "clear_error_message":
       return { ...state, errorMessage: "", isLoading: false };
     case "toggle_is_loading":
@@ -22,15 +26,20 @@ const authReducer = (state, action) => {
       return state;
   }
 };
-
 // Local SignIn
 const tryLocalSignin = (dispatch) => async () => {
-  const token = await AsyncStorage.getItem("token");
-  if (token) {
-    dispatch({ type: "signin", payload: token });
-    navigate("mainFlow");
-  } else {
-    navigate("loginFlow");
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      dispatch({ type: "signin", payload: token });
+      navigate("mainFlow");
+    } else {
+      navigate("loginFlow");
+    }
+    console.log("[AuthContext.js] *TryLocalSignin");
+  } catch (error) {
+    console.log("[AuthContext.js] *TryLocalSignin catch");
+    console.log(error);
   }
 };
 // Clear Error Message
@@ -93,7 +102,8 @@ const signin = (dispatch) => async ({ email, password }) => {
       password,
     });
     await AsyncStorage.setItem("token", response.data.token);
-    dispatch({ type: "signin", payload: response.data.token });
+    dispatch({ type: "signin", payload: response.data });
+    console.log("[AuthContext.js] payload:", response.data);
     navigate("mainFlow");
   } catch (err) {
     console.log("*LOG at AuthContext: ", err);
@@ -127,5 +137,9 @@ export const { Provider, Context } = createDataContext(
     clearErrorMessage,
     tryLocalSignin,
   },
-  { token: null, errorMessage: "", isTouchable: false }
+  {
+    token: null,
+    errorMessage: "",
+    isTouchable: false,
+  }
 );

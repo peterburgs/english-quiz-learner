@@ -1,20 +1,49 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  FlatList,
+} from "react-native";
 import Topic from "./Topic";
+import color from "../common/color";
 
 const { width: WIDTH } = Dimensions.get("screen");
 
-const Level = ({ onPress }) => {
-  const levelTitle = "Level 1";
+const Level = ({
+  onPress,
+  level,
+  pointerEvents,
+  backgroundColor,
+  topicTitleColor,
+}) => {
+  console.log(level);
   return (
-    <View style={styles.container}>
+    <View style={styles.container} pointerEvents={pointerEvents}>
       {/* Title */}
-      <Text style={styles.title}>{levelTitle}</Text>
+      <Text style={styles.title}>{level.name}</Text>
       {/* List of Topic */}
-      <View style={styles.topicContainer}>
-        <Topic onPress={onPress} />
-        <Topic onPress={onPress} />
+      <View
+        style={[
+          styles.topicContainer,
+          (backgroundColor = { backgroundColor }),
+        ]}
+      >
+        <FlatList
+          data={level.topics}
+          renderItem={({ item }) => {
+            return (
+              <Topic
+                topic={item}
+                onPress={onPress}
+                topicTitleColor={topicTitleColor}
+              />
+            );
+          }}
+          keyExtractor={(item) => item._id}
+        />
       </View>
     </View>
   );
@@ -29,13 +58,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontSize: 19,
+    fontSize: 23,
     fontWeight: "bold",
     alignSelf: "center",
     marginBottom: 5,
   },
   topicContainer: {
-    backgroundColor: "#e8e8e8",
+    paddingBottom: WIDTH / 30,
     borderRadius: 40,
     shadowColor: "#393e46",
     shadowOffset: {
@@ -45,5 +74,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    backgroundColor: color.topicContainerEnabled,
   },
 });
