@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/display-name */
 import React from "react";
 
 import { Dimensions, StyleSheet } from "react-native";
@@ -7,6 +5,7 @@ import {
   createAppContainer,
   createSwitchNavigator,
 } from "react-navigation";
+import color from "./src/common/color";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -26,6 +25,8 @@ import ShopScreen from "./src/screens/ShopScreen";
 // Import Context
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as UserProvider } from "./src/context/UserContext";
+import { Provider as LevelProvider } from "./src/context/LevelContext";
+
 import { setNavigator } from "./src/common/navigationRef";
 
 // Get Device Height & Width
@@ -87,16 +88,24 @@ const switchNavigator = createSwitchNavigator(
       {
         tabBarOptions: {
           //activeBackgroundColor: "tomato",
-          activeTintColor: "#1b6ca8",
+          activeTintColor: color.activeTintColor,
           // inactiveBackgroundColor: "#eee",
-          inactiveTintColor: "#bbbbbb",
+          inactiveTintColor: color.inactiveTintColor,
           style: {
             borderTopColor: "transparent",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            backgroundColor: "#e8e8e8",
+            borderTopLeftRadius: 25,
+            borderTopRightRadius: 25,
+            shadowColor: "#222831",
+            shadowOffset: {
+              width: 10,
+              height: 10,
+            },
+            shadowOpacity: 1,
+            shadowRadius: 3.84,
+            elevation: 10,
+            backgroundColor: color.tabBarBackgroundColor,
             position: "absolute",
-            bottom: 0,
+            bottom: 1,
             padding: 10,
             width: WIDTH,
             height: 54,
@@ -106,7 +115,7 @@ const switchNavigator = createSwitchNavigator(
       }
     ),
   },
-  { initialRouteName: "mainFlow" }
+  { initialRouteName: "ResolveAuth" }
 );
 
 // App
@@ -117,11 +126,13 @@ export default () => {
     <NavigationContainer theme={myTheme}>
       <AuthProvider>
         <UserProvider>
-          <App
-            ref={(navigator) => {
-              setNavigator(navigator);
-            }}
-          />
+          <LevelProvider>
+            <App
+              ref={(navigator) => {
+                setNavigator(navigator);
+              }}
+            />
+          </LevelProvider>
         </UserProvider>
       </AuthProvider>
     </NavigationContainer>

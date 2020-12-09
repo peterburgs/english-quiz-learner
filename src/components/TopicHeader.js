@@ -9,11 +9,12 @@ import { FontAwesome5 } from "@expo/vector-icons";
 // Context
 
 import { Context as UserContext } from "../context/UserContext";
-
+import { Context as AuthContext } from "../context/AuthContext";
 const TopicHeader = () => {
   const { state, getUser } = useContext(UserContext);
+  const userCredential = useContext(AuthContext).state.userCredential;
   useEffect(() => {
-    getUser();
+    getUser({ userCredential });
   }, []);
 
   return (
