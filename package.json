@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
-    "eslint": "^7.14.0",
     "eslint-plugin-react": "^7.21.5"
   },
   "private": true,

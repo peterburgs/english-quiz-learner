@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { Input } from "react-native-elements";
