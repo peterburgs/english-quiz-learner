@@ -36,9 +36,7 @@ const tryLocalSignin = (dispatch) => async () => {
     } else {
       navigate("loginFlow");
     }
-    console.log("[AuthContext.js] *TryLocalSignin");
   } catch (error) {
-    console.log("[AuthContext.js] *TryLocalSignin catch");
     console.log(error);
   }
 };
