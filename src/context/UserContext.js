@@ -15,7 +15,6 @@ const userReducer = (state, action) => {
 const getUser = (dispatch) => async () => {
   try {
     const response = await EnglishQuizApi.get("/users");
-    console.log("response.data.user:\n", response.data.user);
     dispatch({
       type: "get_user",
       payload: response.data.user,

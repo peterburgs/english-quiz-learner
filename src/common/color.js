@@ -1,7 +1,6 @@
 const color = {
   activeTintColor: "#2d6187",
-  oldColor: "#FFB800",
-  newColor: "#D9D7D7",
+
   inactiveTintColor: "#bbbbbb",
   shadowColor: "#393e46",
   tabBarBackgroundColor: "#fff",
@@ -9,5 +8,10 @@ const color = {
   topicContainerDisabled: "#6b778d",
   topicColorEnabled: "#222831",
   topicColorDisabled: "#f1f1f1",
+  blue: "#2296F3",
+  orange: "#ff9234",
+  red: "#ff4646",
+  yellow: "#FFB800",
+  lightGrey: "#D9D7D7",
 };
 export default color;

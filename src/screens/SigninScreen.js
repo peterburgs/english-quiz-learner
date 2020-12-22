@@ -13,7 +13,7 @@ import NavLink from "../components/NavLink";
 import { Context } from "../context/AuthContext";
 
 // App
-const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 const SignInScreen = () => {
   const { state, signin, clearErrorMessage } = useContext(Context);
   return (

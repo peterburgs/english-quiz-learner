@@ -16,11 +16,9 @@ const Topic = ({ onPress, topicTitleColor, topic }) => {
   const { state } = useContext(UserContext);
   const progressTopic = state.user
     ? state.user.progress.find((item) => {
-        console.log("item: ", item);
         return item.topic == topic._id;
       })
     : null;
-  console.log("progressTopic: ", progressTopic);
   return (
     <View style={styles.container}>
       {/* Topic Image */}
@@ -44,9 +42,9 @@ const Topic = ({ onPress, topicTitleColor, topic }) => {
             {
               backgroundColor: progressTopic
                 ? progressTopic.completedLesson >= 1
-                  ? color.oldColor
-                  : color.newColor
-                : color.newColor,
+                  ? color.yellow
+                  : color.lightGrey
+                : color.lightGrey,
             },
           ]}
         />
@@ -56,9 +54,9 @@ const Topic = ({ onPress, topicTitleColor, topic }) => {
             {
               backgroundColor: progressTopic
                 ? progressTopic.completedLesson >= 2
-                  ? color.oldColor
-                  : color.newColor
-                : color.newColor,
+                  ? color.yellow
+                  : color.lightGrey
+                : color.lightGrey,
             },
           ]}
         />
@@ -68,9 +66,9 @@ const Topic = ({ onPress, topicTitleColor, topic }) => {
             {
               backgroundColor: progressTopic
                 ? progressTopic.completedLesson == 3
-                  ? color.oldColor
-                  : color.newColor
-                : color.newColor,
+                  ? color.yellow
+                  : color.lightGrey
+                : color.lightGrey,
             },
           ]}
         />

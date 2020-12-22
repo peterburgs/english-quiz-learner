@@ -15,12 +15,10 @@ const levelReducer = (state, action) => {
 const getLevels = (dispatch) => async () => {
   try {
     const response = await EnglishQuizApi.get("/levels");
-    console.log("response.data.level:\n", response.data);
     dispatch({
       type: "get_levels",
       payload: response.data.level,
     });
-    console.log("[LevelContext.js] *level:", response.data);
   } catch (err) {
     console.log("Level context error: \n", err);
   }

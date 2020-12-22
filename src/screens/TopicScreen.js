@@ -4,9 +4,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Modal,
-  TouchableHighlight,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
+import Modal from "react-native-modal";
+import { FontAwesome } from "@expo/vector-icons";
 // Import components
 import TopicHeader from "../components/TopicHeader";
 import Level from "../components/Level";
@@ -15,46 +17,79 @@ import Level from "../components/Level";
 import { Context as LevelContext } from "../context/LevelContext";
 import { Context as UserContext } from "../context/UserContext";
 import color from "../common/color";
+import { TouchableWithoutFeedback } from "react-native";
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 // Topic Screen
 const TopicScreen = () => {
-  const [modalVisible, setModalVisible] = useState(false);
   const handleTopic = () => {
     setModalVisible(true);
   };
   const { state, getLevels } = useContext(LevelContext);
   const userContext = useContext(UserContext);
+  // Toggle Modal
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
   useEffect(() => {
     getLevels();
   }, []);
   return (
     <View>
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          console.log("Modal has been closed.");
-        }}
+        isVisible={isModalVisible}
+        animationIn={"zoomInRight"}
+        animationOut={"slideOutDown"}
+        animationInTiming={0}
+        animationOutTiming={0}
+        backdropTransitionInTiming={0}
+        backdropTransitionOutTiming={0}
+        onBackdropPress={toggleModal}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            <Text style={styles.modalText}>
+              Choose a lesson to start
+            </Text>
 
-            <TouchableHighlight
-              style={{
-                ...styles.openButton,
-                backgroundColor: "#2196F3",
-              }}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <Text style={styles.textStyle}>Close</Text>
-            </TouchableHighlight>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  ...styles.openButton,
+                  backgroundColor: color.yellow,
+                }}
+                onPress={toggleModal}
+              >
+                <Text style={styles.textStyle}>Lesson 1</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  ...styles.openButton,
+                  backgroundColor: color.yellow,
+                }}
+                onPress={toggleModal}
+              >
+                <Text style={styles.textStyle}>Lesson 2</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  ...styles.openButton,
+                  backgroundColor: color.blue,
+                }}
+                onPress={toggleModal}
+              >
+                <Text style={styles.textStyle}>Lesson 3</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
+
       <FlatList
         contentInset={{ bottom: 60 }}
         data={state.level}
@@ -71,7 +106,6 @@ const TopicScreen = () => {
                     ? "auto"
                     : "none"
                   : "auto"
-                // TODO: display modal when users tap on unreached topics
               }
               backgroundColor={
                 userContext.state.user
@@ -88,6 +122,14 @@ const TopicScreen = () => {
                     ? color.topicColorEnabled
                     : color.topicColorDisabled
                   : color.topicColorEnabled
+              }
+              message={
+                userContext.state.user
+                  ? userContext.state.user.currentLevelOrder >=
+                    item.order
+                    ? null
+                    : "Finish previous level to unlock this"
+                  : null
               }
             />
           );
@@ -110,17 +152,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    padding: 30,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
-      width: 0,
+      width: 1,
       height: 2,
     },
     shadowOpacity: 0.25,
@@ -128,14 +169,19 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    marginBottom: 15,
+    fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 20,
+    fontSize: 20,
   },
   openButton: {
     backgroundColor: "#F194FF",
     borderRadius: 12,
-    padding: 8,
+    padding: 5,
+    marginLeft: WIDTH / 60,
+    marginRight: WIDTH / 60,
     elevation: 2,
+    width: WIDTH / 5,
   },
   textStyle: {
     color: "white",

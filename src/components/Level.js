@@ -18,12 +18,17 @@ const Level = ({
   pointerEvents,
   backgroundColor,
   topicTitleColor,
+  message,
 }) => {
-  console.log(level);
   return (
     <View style={styles.container} pointerEvents={pointerEvents}>
       {/* Title */}
       <Text style={styles.title}>{level.name}</Text>
+      {message ? (
+        <Text style={{ color: color.red, alignSelf: "center" }}>
+          {message}
+        </Text>
+      ) : null}
       {/* List of Topic */}
       <View
         style={[
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
   topicContainer: {
     paddingBottom: WIDTH / 30,
     borderRadius: 40,
-    shadowColor: "#393e46",
+    shadowColor: color.shadowColor,
     shadowOffset: {
       width: 1,
       height: 2,
