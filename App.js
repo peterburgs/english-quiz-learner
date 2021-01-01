@@ -21,6 +21,9 @@ import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import TopicScreen from "./src/screens/TopicScreen";
 import AccountScreen from "./src/screens/AccountScreen";
 import ShopScreen from "./src/screens/ShopScreen";
+import LessonScreen from "./src/screens/LessonScreen";
+import FinishScreen from "./src/screens/FinishScreen";
+import CommentScreen from "./src/screens/CommentScreen";
 
 // Import Context
 import { Provider as AuthProvider } from "./src/context/AuthContext";
@@ -71,6 +74,29 @@ shopFlow.navigationOptions = () => {
   };
 };
 
+// Styles
+const styles = StyleSheet.create({
+  tabBarOptions: {
+    borderTopColor: "transparent",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    shadowColor: "#222831",
+    shadowOffset: {
+      width: 10,
+      height: 10,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 3.84,
+    elevation: 10,
+    backgroundColor: color.tabBarBackgroundColor,
+    position: "absolute",
+    bottom: 1,
+    padding: 10,
+    width: WIDTH,
+    height: 54,
+  },
+});
+
 const switchNavigator = createSwitchNavigator(
   {
     ResolveAuth: ResolveAuthScreen,
@@ -81,7 +107,14 @@ const switchNavigator = createSwitchNavigator(
       },
       { initialRouteName: "Signin" }
     ),
-
+    lessonFlow: createStackNavigator(
+      {
+        Lesson: LessonScreen,
+        Comment: CommentScreen,
+        Finish: FinishScreen,
+      },
+      { initialRouteName: "Lesson" }
+    ),
     mainFlow: createBottomTabNavigator(
       { topicFlow, accountFlow, shopFlow },
 
@@ -91,25 +124,7 @@ const switchNavigator = createSwitchNavigator(
           activeTintColor: color.activeTintColor,
           // inactiveBackgroundColor: "#eee",
           inactiveTintColor: color.inactiveTintColor,
-          style: {
-            borderTopColor: "transparent",
-            borderTopLeftRadius: 25,
-            borderTopRightRadius: 25,
-            shadowColor: "#222831",
-            shadowOffset: {
-              width: 10,
-              height: 10,
-            },
-            shadowOpacity: 1,
-            shadowRadius: 3.84,
-            elevation: 10,
-            backgroundColor: color.tabBarBackgroundColor,
-            position: "absolute",
-            bottom: 1,
-            padding: 10,
-            width: WIDTH,
-            height: 54,
-          },
+          style: styles.tabBarOptions,
         },
         initialRouteName: "topicFlow",
       }

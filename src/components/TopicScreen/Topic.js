@@ -8,33 +8,49 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import color from "../common/color";
+// Color
+import color from "../../common/color";
+// Linear gradient
+import { LinearGradient } from "expo-linear-gradient";
+// API
+import EnglishQuizApi from "../../api/EnglishQuizApi";
+
+// Context
+import { Context as UserContext } from "../../context/UserContext";
+
+// Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-import { Context as UserContext } from "../context/UserContext";
+
 // Component
-const Topic = ({ onPress, topicTitleColor, topic }) => {
+const Topic = ({ onPress, topic }) => {
   const { state } = useContext(UserContext);
-  const progressTopic = state.user
-    ? state.user.progress.find((item) => {
+  const progressTopic = state.progresses
+    ? state.progresses.find((item) => {
         return item.topic == topic._id;
       })
     : null;
+
   return (
     <View style={styles.container}>
       {/* Topic Image */}
       <TouchableOpacity
-        style={styles.imageContainer}
-        onPress={onPress}
+        onPress={() => {
+          onPress(topic._id);
+        }}
       >
         <Image
-          source={require("../../assets/pizza.png")}
+          source={{
+            uri:
+              String(EnglishQuizApi.defaults.baseURL) +
+              "/topics" +
+              topic.imageUrl,
+          }}
           style={styles.image}
           resizeMode={"contain"}
         />
       </TouchableOpacity>
-      <Text style={[styles.title, { color: topicTitleColor }]}>
-        {topic.name}
-      </Text>
+
+      <Text style={styles.title}>{topic.name}</Text>
       <View style={styles.rectangleContainer}>
         <View
           style={[
@@ -81,28 +97,19 @@ export default Topic;
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: WIDTH / 20,
-    marginTop: WIDTH / 30,
+    marginHorizontal: WIDTH / 10,
+    marginTop: WIDTH / 10,
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: WIDTH / 30,
   },
   image: {
-    aspectRatio: 0.7,
+    aspectRatio: 1,
     resizeMode: "contain",
     alignSelf: "center",
     height: WIDTH / 5,
     width: WIDTH / 5,
   },
-  imageContainer: {
-    alignContent: "center",
-    alignItems: "center",
-    height: 2 + WIDTH / 5,
-    width: 2 + WIDTH / 5,
-    borderRadius: WIDTH / 5,
-    borderWidth: 4,
-    borderColor: "#f4f4f2",
-    backgroundColor: "#3094E9",
-  },
+
   rectangleContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -112,9 +119,11 @@ const styles = StyleSheet.create({
     width: WIDTH / 12,
     height: WIDTH / 45,
     marginHorizontal: 4,
+    borderRadius: 15,
   },
   title: {
     fontSize: 19,
     fontWeight: "bold",
+    color: "white",
   },
 });

@@ -7,7 +7,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
 import { PacmanIndicator } from "react-native-indicators";
-const { width: WIDTH } = Dimensions.get("screen");
+
+// Device spec
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
+const screenWeight =
+  HEIGHT > WIDTH ? HEIGHT / WIDTH : (WIDTH * 2) / HEIGHT;
 
 const AuthForm = ({
   errorMessage,
@@ -20,8 +24,8 @@ const AuthForm = ({
   const [password, setPassword] = useState("");
   const [viewPassword, setViewPassword] = useState(true);
   const [pwIconName, setPwIconName] = useState("ios-eye-off");
-
   const toggleViewPassword = () => {
+    console.log(WIDTH);
     setViewPassword((viewPassword) => !viewPassword);
     setPwIconName((pwIconName) => {
       return pwIconName == "ios-eye" ? "ios-eye-off" : "ios-eye";
@@ -117,12 +121,12 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: "#07689f",
-    width: WIDTH / 3,
-    height: 50,
     borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
+    width: screenWeight * 90,
+    height: 50,
   },
   submitButtonText: {
     color: "#fff",
@@ -139,8 +143,10 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 17,
-    width: WIDTH - 20,
+    width: WIDTH / 1.15,
     height: 50,
+    maxWidth: 400,
+    maxHeight: 70,
     borderRadius: 23,
     alignSelf: "center",
     alignItems: "center",

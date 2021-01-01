@@ -6,7 +6,12 @@ import EnglishQuizApi from "../api/EnglishQuizApi";
 const userReducer = (state, action) => {
   switch (action.type) {
     case "get_user":
-      return { ...state, user: action.payload };
+      return {
+        ...state,
+        user: action.payload.user,
+        progresses: action.payload.progresses,
+      };
+
     default:
       return state;
   }
@@ -17,14 +22,15 @@ const getUser = (dispatch) => async () => {
     const response = await EnglishQuizApi.get("/users");
     dispatch({
       type: "get_user",
-      payload: response.data.user,
+      payload: response.data,
     });
   } catch (err) {
     console.log("User context error: \n", err);
   }
 };
+
 export const { Provider, Context } = createDataContext(
   userReducer,
   { getUser },
-  { token: null, user: null }
+  { user: null, progresses: null }
 );

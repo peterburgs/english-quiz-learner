@@ -7,12 +7,15 @@ import {
 } from "react-native";
 import { NavigationEvents, SafeAreaView } from "react-navigation";
 import { Context as AuthContext } from "../context/AuthContext";
-import AuthForm from "../components/AuthForm";
-import NavLink from "../components/NavLink";
+import AuthForm from "../components/AuthForm/AuthForm";
+import NavLink from "../components/AuthForm/NavLink";
+import { ScrollView } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
 
 // Get Width & Height
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-
+const screenWeight =
+  HEIGHT > WIDTH ? HEIGHT / WIDTH : (WIDTH * 2) / HEIGHT;
 // App
 const SignupScreen = () => {
   const { state, signup, clearErrorMessage } = useContext(
@@ -32,13 +35,16 @@ const SignupScreen = () => {
         onSubmit={signup}
         isLoading={state.isLoading}
         isTouchable={state.isTouchable}
+        style={styles.authForm}
       />
       <NavLink
         routeName="Signin"
         text="Already had an account? Sign in instead!"
+        style={styles.navLink}
       />
       <ImageBackground
         source={require("../../assets/signup-bg.png")}
+        resizeMode="contain"
         style={styles.footageImage}
       />
     </SafeAreaView>
@@ -58,14 +64,18 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   footageImage: {
-    position: "absolute",
-    height: "45%",
-    width: "88%",
     alignSelf: "center",
-    alignItems: "center",
-    alignContent: "center",
-    top: 0.7 * HEIGHT,
+    justifyContent: "center",
+    position: "absolute",
+    top: HEIGHT - screenWeight * (HEIGHT / 8),
+    height: screenWeight * (HEIGHT / 8),
+    width: WIDTH,
+    maxWidth: WIDTH,
+    zIndex: 0,
+    elevation: 0,
   },
+  authForm: { zIndex: 1, elevation: 1 },
+  navLink: { zIndex: 1, elevation: 1 },
   backgroundContainer: {
     flex: 1,
     position: "absolute",
@@ -74,10 +84,12 @@ const styles = StyleSheet.create({
   },
   appName: {
     color: "#d35d6e",
-    fontSize: 65,
+    fontSize: 50,
     fontWeight: "bold",
     opacity: 1,
     marginTop: HEIGHT / 7,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
 });
 

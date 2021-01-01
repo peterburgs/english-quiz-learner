@@ -6,33 +6,95 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Alert,
+  ImageBackground,
+  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
-import { FontAwesome } from "@expo/vector-icons";
 // Import components
-import TopicHeader from "../components/TopicHeader";
-import Level from "../components/Level";
+import TopicHeader from "../components/TopicScreen/TopicHeader";
+import Level from "../components/TopicScreen/Level";
+import color from "../common/color";
 
 // Context
 import { Context as LevelContext } from "../context/LevelContext";
 import { Context as UserContext } from "../context/UserContext";
-import color from "../common/color";
-import { TouchableWithoutFeedback } from "react-native";
+
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 // Topic Screen
-const TopicScreen = () => {
-  const handleTopic = () => {
-    setModalVisible(true);
-  };
+const TopicScreen = ({ navigation }) => {
   const { state, getLevels } = useContext(LevelContext);
+  const [currentTopicId, setCurrentTopicId] = useState(null);
+  // Array tracks colors of lesson
+  const [lessonColors, setLessonColors] = useState([
+    color.blue,
+    color.blue,
+    color.blue,
+  ]);
+
+  // Handle when press lesson
+  const handlePressLesson = async (index, topicId) => {
+    const topic = userContext.state.progresses
+      ? userContext.state.progresses.find((item) => {
+          return item.topic == topicId;
+        })
+      : null;
+
+    if (index > topic.completedLesson + 1) {
+      Alert.alert(
+        "Hold up!",
+        "Looks like you haven't finished the previous lesson...",
+        [
+          {
+            text: "Understood",
+            onPress: () => {
+              console.log("Understood");
+            },
+          },
+        ]
+      );
+    } else {
+      navigation.navigate("Lesson", {
+        topicId: topicId,
+        lessonOrder: index,
+      });
+    }
+    setModalVisible(!isModalVisible);
+  };
+
   const userContext = useContext(UserContext);
+
   // Toggle Modal
   const [isModalVisible, setModalVisible] = useState(false);
 
+  // Handle Topic
+  const handleTopic = (topicId) => {
+    setCurrentTopicId(topicId);
+    setModalVisible(true);
+    const progressTopic = userContext.state.progresses
+      ? userContext.state.progresses.find((item) => {
+          return item.topic == topicId;
+        })
+      : null;
+    setLessonColors(() => {
+      if (progressTopic) {
+        if (progressTopic.completedLesson == 1) {
+          return [color.yellow, color.lightGrey, color.lightGrey];
+        } else if (progressTopic.completedLesson == 2) {
+          return [color.yellow, color.yellow, color.lightGrey];
+        }
+        return [color.yellow, color.yellow, color.yellow];
+      } else {
+        return [color.lightGrey, color.lightGrey, color.lightGrey];
+      }
+    });
+    // setProgressTopic(progressTopic);
+  };
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  // const
   useEffect(() => {
     getLevels();
   }, []);
@@ -40,12 +102,12 @@ const TopicScreen = () => {
     <View>
       <Modal
         isVisible={isModalVisible}
-        animationIn={"zoomInRight"}
+        animationIn={"fadeInDown"}
         animationOut={"slideOutDown"}
-        animationInTiming={0}
-        animationOutTiming={0}
-        backdropTransitionInTiming={0}
-        backdropTransitionOutTiming={0}
+        animationInTiming={500}
+        animationOutTiming={500}
+        backdropTransitionInTiming={500}
+        backdropTransitionOutTiming={500}
         onBackdropPress={toggleModal}
       >
         <View style={styles.centeredView}>
@@ -56,32 +118,37 @@ const TopicScreen = () => {
 
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
-                activeOpacity={0.5}
                 style={{
                   ...styles.openButton,
-                  backgroundColor: color.yellow,
+                  backgroundColor: lessonColors[0],
                 }}
-                onPress={toggleModal}
+                onPress={() => {
+                  handlePressLesson(1, currentTopicId);
+                }}
               >
                 <Text style={styles.textStyle}>Lesson 1</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
-                activeOpacity={0.5}
                 style={{
                   ...styles.openButton,
-                  backgroundColor: color.yellow,
+                  backgroundColor: lessonColors[1],
                 }}
-                onPress={toggleModal}
+                onPress={() => {
+                  handlePressLesson(2, currentTopicId);
+                }}
               >
                 <Text style={styles.textStyle}>Lesson 2</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
-                activeOpacity={0.5}
                 style={{
                   ...styles.openButton,
-                  backgroundColor: color.blue,
+                  backgroundColor: lessonColors[2],
                 }}
-                onPress={toggleModal}
+                onPress={() => {
+                  handlePressLesson(3, currentTopicId);
+                }}
               >
                 <Text style={styles.textStyle}>Lesson 3</Text>
               </TouchableOpacity>
@@ -89,55 +156,53 @@ const TopicScreen = () => {
           </View>
         </View>
       </Modal>
-
-      <FlatList
-        contentInset={{ bottom: 60 }}
-        data={state.level}
-        renderItem={({ item }) => {
-          return (
-            <Level
-              onPress={handleTopic}
-              // topics={item.topics}
-              level={item}
-              pointerEvents={
-                userContext.state.user
-                  ? userContext.state.user.currentLevelOrder >=
-                    item.order
-                    ? "auto"
-                    : "none"
-                  : "auto"
-              }
-              backgroundColor={
-                userContext.state.user
-                  ? userContext.state.user.currentLevelOrder >=
-                    item.order
-                    ? color.topicContainerEnabled
-                    : color.topicContainerDisabled
-                  : color.topicContainerEnabled
-              }
-              topicTitleColor={
-                userContext.state.user
-                  ? userContext.state.user.currentLevelOrder >=
-                    item.order
-                    ? color.topicColorEnabled
-                    : color.topicColorDisabled
-                  : color.topicColorEnabled
-              }
-              message={
-                userContext.state.user
-                  ? userContext.state.user.currentLevelOrder >=
-                    item.order
-                    ? null
-                    : "Finish previous level to unlock this"
-                  : null
-              }
-            />
-          );
-        }}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={{ paddingBottom: 60 }}
-        showsVerticalScrollIndicator={false}
-      />
+      <ImageBackground
+        style={styles.imageBackground}
+        source={require("../../assets/topic-screen-bg.png")}
+      >
+        <View>
+          <FlatList
+            contentInset={{ bottom: 60 }}
+            data={state.level}
+            renderItem={({ item }) => {
+              return (
+                <Level
+                  onPress={handleTopic}
+                  // topics={item.topics}
+                  level={item}
+                  pointerEvents={
+                    userContext.state.user
+                      ? userContext.state.user.currentLevelOrder >=
+                        item.order
+                        ? "auto"
+                        : "none"
+                      : "auto"
+                  }
+                  message={
+                    userContext.state.user
+                      ? userContext.state.user.currentLevelOrder >=
+                        item.order
+                        ? null
+                        : "Finish previous level to unlock this"
+                      : null
+                  }
+                  opacityRate={
+                    userContext.state.user
+                      ? userContext.state.user.currentLevelOrder >=
+                        item.order
+                        ? 1
+                        : 0.4
+                      : 1
+                  }
+                />
+              );
+            }}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={{ paddingBottom: 60 }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -145,9 +210,7 @@ TopicScreen.navigationOptions = {
   headerTitle: () => <TopicHeader />,
 };
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, flexDirection: "column" },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -187,6 +250,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  imageBackground: {
+    justifyContent: "center",
+    resizeMode: "contain",
+    width: WIDTH,
+    height: HEIGHT * 0.9,
+    position: "relative",
   },
 });
 

@@ -6,9 +6,12 @@ import {
   View,
   Dimensions,
   FlatList,
+  Image,
 } from "react-native";
 import Topic from "./Topic";
-import color from "../common/color";
+import color from "../../common/color";
+// Linear gradient
+// import { LinearGradient } from "expo-linear-gradient";
 
 const { width: WIDTH } = Dimensions.get("screen");
 
@@ -19,23 +22,32 @@ const Level = ({
   backgroundColor,
   topicTitleColor,
   message,
+  opacityRate,
 }) => {
   return (
     <View style={styles.container} pointerEvents={pointerEvents}>
+      {/* image */}
+
+      <Image
+        source={require("../../../assets/crown.png")}
+        resizeMode={"contain"}
+        style={styles.levelImage}
+      />
       {/* Title */}
       <Text style={styles.title}>{level.name}</Text>
       {message ? (
-        <Text style={{ color: color.red, alignSelf: "center" }}>
+        <Text
+          style={{
+            color: "#fceef5",
+            alignSelf: "center",
+            fontStyle: "italic",
+          }}
+        >
           {message}
         </Text>
       ) : null}
       {/* List of Topic */}
-      <View
-        style={[
-          styles.topicContainer,
-          (backgroundColor = { backgroundColor }),
-        ]}
-      >
+      <View style={[styles.topicContainer, { opacity: opacityRate }]}>
         <FlatList
           data={level.topics}
           renderItem={({ item }) => {
@@ -67,18 +79,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginBottom: 5,
+    marginTop: 5,
+    color: "white",
+    backgroundColor: "#fdb827",
+    paddingHorizontal: WIDTH / 5,
+    paddingBottom: 2,
+    borderRadius: 15,
   },
   topicContainer: {
     paddingBottom: WIDTH / 30,
-    borderRadius: 40,
-    shadowColor: color.shadowColor,
-    shadowOffset: {
-      width: 1,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    backgroundColor: color.topicContainerEnabled,
+  },
+  levelImage: {
+    height: 50,
+    alignSelf: "center",
   },
 });
