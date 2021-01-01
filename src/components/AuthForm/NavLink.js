@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
-import Spacer from "./Spacer";
+import Spacer from "../Spacer";
 import { withNavigation } from "react-navigation";
 
 const NavLink = ({ navigation, text, routeName }) => {

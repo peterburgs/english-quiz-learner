@@ -1,4 +1,4 @@
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Alert } from "react-native";
 import createDataContext from "./createDataContext";
 import { navigate } from "../common/navigationRef";
 import EnglishQuizApi from "../api/EnglishQuizApi";
@@ -31,8 +31,33 @@ const tryLocalSignin = (dispatch) => async () => {
   try {
     const token = await AsyncStorage.getItem("token");
     if (token) {
-      dispatch({ type: "signin", payload: token });
-      navigate("mainFlow");
+      const expirationDate = new Date(
+        await AsyncStorage.getItem("expirationDate")
+      );
+      if (new Date().getTime() > new Date(expirationDate).getTime()) {
+        dispatch({ type: "signout" });
+        navigate("loginFlow");
+      } else {
+        dispatch({ type: "signin", payload: token });
+        navigate("mainFlow");
+        setTimeout(() => {
+          Alert.alert(
+            "Session Timeout",
+            "Please Sign In to continue...",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  dispatch({ type: "signout" });
+                  navigate("loginFlow");
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        }, expirationDate.getTime() - new Date().getTime());
+      }
+      //
     } else {
       navigate("loginFlow");
     }
@@ -95,14 +120,40 @@ const signin = (dispatch) => async ({ email, password }) => {
     dispatch({
       type: "toggle_is_touchable",
     });
+
     const response = await EnglishQuizApi.post("/signin", {
       email,
       password,
     });
     await AsyncStorage.setItem("token", response.data.token);
+    const expirationDate = new Date(
+      new Date().getTime() + response.data.expiresIn * 3600000
+    );
+    await AsyncStorage.setItem(
+      "expirationDate",
+      expirationDate.toISOString()
+    );
+
     dispatch({ type: "signin", payload: response.data });
-    console.log("[AuthContext.js] payload:", response.data);
+
     navigate("mainFlow");
+
+    setTimeout(() => {
+      Alert.alert(
+        "Session Timeout",
+        "Please Sign In to continue...",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              dispatch({ type: "signout" });
+              navigate("loginFlow");
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }, response.data.expiresIn * 3600000);
   } catch (err) {
     console.log("*LOG at AuthContext: ", err);
     dispatch({
