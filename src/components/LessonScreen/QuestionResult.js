@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 const QuestionResult = () => {
   return (
     <View>
-      <Text></Text>
+      <Text>Hello</Text>
     </View>
   );
 };

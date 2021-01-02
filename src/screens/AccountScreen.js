@@ -1,3 +1,5 @@
+console.disableYellowBox = true;
+
 import React, { useContext } from "react";
 import { Button } from "react-native";
 import { SafeAreaView } from "react-navigation";

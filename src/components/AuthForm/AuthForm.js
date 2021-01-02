@@ -38,7 +38,6 @@ const AuthForm = ({
     });
   };
   const validate = (text) => {
-    console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
       setEmail(text);

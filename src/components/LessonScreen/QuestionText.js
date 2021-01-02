@@ -6,6 +6,10 @@ import {
   Image,
   Dimensions,
 } from "react-native";
+
+// Import API
+
+import api from "../../api/EnglishQuizApi";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
@@ -14,6 +18,7 @@ const QuestionText = ({
   questionText,
   imageUrl,
 }) => {
+  imageUrl = api.defaults.baseURL + "/questions" + imageUrl;
   return (
     <View style={styles.container}>
       <Text style={styles.questionRequirement}>

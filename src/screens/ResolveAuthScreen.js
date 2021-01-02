@@ -1,3 +1,5 @@
+console.disableYellowBox = true;
+
 import { useEffect, useContext } from "react";
 import { Context as AuthContext } from "../context/AuthContext";
 

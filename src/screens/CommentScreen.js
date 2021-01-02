@@ -1,3 +1,5 @@
+console.disableYellowBox = true;
+
 import React, { useContext } from "react";
 import { Text } from "react-native";
 import { Button } from "react-native";

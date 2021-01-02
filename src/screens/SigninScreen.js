@@ -1,3 +1,5 @@
+console.disableYellowBox = true;
+
 import React, { useContext } from "react";
 import { Image } from "react-native";
 import {
