@@ -12,62 +12,63 @@ import {
 import color from "../../common/color";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-
 // Mockup data
-const selections = [
-  {
-    itemText: "A mango",
-    textColor: "#000",
-    backgroundColor: "fff",
-    id: "4",
-  },
-  {
-    itemText: "An apple",
-    textColor: "#000",
-    backgroundColor: "fff",
-    id: "1",
-  },
-  {
-    itemText: "An orange",
-    textColor: "#000",
-    backgroundColor: "fff",
-    id: "2",
-  },
-  {
-    itemText: "A banana",
-    textColor: "#000",
-    backgroundColor: "fff",
-    id: "3",
-  },
-];
+// const selections = [
+//   {
+//     itemText: "A mango",
+//     textColor: "#000",
+//     backgroundColor: "fff",
+//     id: "4",
+//   },
+//   {
+//     itemText: "An apple",
+//     textColor: "#000",
+//     backgroundColor: "fff",
+//     id: "1",
+//   },
+//   {
+//     itemText: "An orange",
+//     textColor: "#000",
+//     backgroundColor: "fff",
+//     id: "2",
+//   },
+//   {
+//     itemText: "A banana",
+//     textColor: "#000",
+//     backgroundColor: "fff",
+//     id: "3",
+//   },
+// ];
 
-// Define single selection item
-const Item = ({ item, onPress, style, textColor }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.buttonContainer, style]}
-    elevation={5}
-  >
-    <Text style={[styles.itemText, { color: textColor }]}>
-      {item.itemText}
-    </Text>
-  </TouchableOpacity>
-);
-const SingleSelection = () => {
+const SingleSelection = ({ selections }) => {
   // State
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // Define single selection item
+  const Item = ({ item, onPress, style, textColor }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.buttonContainer, style]}
+      elevation={5}
+    >
+      <Text style={[styles.itemText, { color: textColor }]}>
+        {item.content}
+      </Text>
+    </TouchableOpacity>
+  );
 
   // Render Item
   const renderItem = ({ item }) => {
     const backgroundColor =
-      item.id === selectedId
+      item.order === selectedItem
         ? color.singleSelectionSelected
         : color.singleSelection;
-    const textColor = item.id === selectedId ? "#fff" : "#000";
+    const textColor = item.order === selectedItem ? "#fff" : "#000";
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        // TODO: handle press a selection
+        onPress={() => setSelectedItem(item.order)}
         style={{ backgroundColor }}
         textColor={textColor}
       />
@@ -78,8 +79,8 @@ const SingleSelection = () => {
       <FlatList
         data={selections}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        extraData={selectedId}
+        keyExtractor={(item) => item.order.toString()}
+        extraData={selectedItem}
       />
     </View>
   );

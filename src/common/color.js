@@ -14,7 +14,11 @@ const color = {
   yellow: "#FFB800",
   lightGrey: "#D9D7D7",
   borderColor: "#BFBEBE",
-  singleSelection: "#a5ecd7",
+  singleSelection: "#cdd0cb",
   singleSelectionSelected: "#f08a5d",
+  box: "#70af85",
+  correctBackground: "#B8F391",
+  incorrectBackground: "#FEC1C1",
+  incorrectColor: "#E82A2D",
 };
 export default color;

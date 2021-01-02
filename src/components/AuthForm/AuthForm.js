@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Dimensions, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  Alert,
+} from "react-native";
 import { Input } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -31,12 +37,66 @@ const AuthForm = ({
       return pwIconName == "ios-eye" ? "ios-eye-off" : "ios-eye";
     });
   };
+  const validate = (text) => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) {
+      setEmail(text);
+      return false;
+    } else {
+      setEmail(text);
+      console.log("Email is in correct form");
+      return true;
+    }
+  };
 
+  // Validate inputs
+  const validateInput = () => {
+    if (!email) {
+      Alert.alert(
+        "Missing Email",
+        "You must enter email to continue.",
+        [
+          {
+            text: "Understood",
+            onPress: () => console.log("OK Pressed"),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else if (!validate(email)) {
+      Alert.alert(
+        "Invalid Email",
+        "Invalid email format. Please try again!",
+        [
+          {
+            text: "Understood",
+            onPress: () => console.log("OK Pressed"),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else if (!password) {
+      Alert.alert(
+        "Missing password",
+        "You must enter password to continue.",
+        [
+          {
+            text: "Understood",
+            onPress: () => console.log("OK Pressed"),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      onSubmit({ email, password });
+    }
+  };
   return (
     <>
       <View style={styles.container}>
+        {/* Email */}
         <View>
-          {/* Email */}
           <Input
             leftIcon={
               <MaterialIcons
@@ -50,7 +110,7 @@ const AuthForm = ({
             placeholder="Email"
             placeholderTextColor="#686d76"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={validate}
             autoCapitalize="none"
             autoCorrect={false}
             maxLength={30}
@@ -95,7 +155,7 @@ const AuthForm = ({
         {/* Submit Button */}
         <TouchableOpacity
           style={styles.submitButton}
-          onPress={() => onSubmit({ email, password })}
+          onPress={() => validateInput()}
           disabled={isTouchable}
         >
           {isLoading == true ? (
@@ -163,10 +223,5 @@ const styles = StyleSheet.create({
     right: 30,
   },
 });
-AuthForm.propTypes = {
-  errorMessage: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  submitButtonText: PropTypes.string.isRequired,
-};
 
 export default AuthForm;

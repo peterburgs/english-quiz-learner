@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-// Import Single Selection
+// Import lodash
+import _ from "lodash";
+
+// Import components
 import SingleSelection from "./SingleSelection";
 import Translate from "./Translate";
 import Arrange from "./Arrange";
@@ -17,10 +20,72 @@ const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 const handleCheck = () => {
   console.log("Checked!");
 };
-const UserAnswer = ({ questionType }) => {
+const UserAnswer = ({
+  type,
+  singleSelection,
+  translate,
+  arrange,
+}) => {
+  // Clone arrange
+  const [data, setData] = useState(_.cloneDeep(arrange));
+  const [submitData, setSubmitData] = useState([]);
+
+  const handleData = (_id) => {
+    const _clonedWord = _.cloneDeep(
+      data.find((e) => {
+        return e._id === _id;
+      })
+    );
+    if (_clonedWord) {
+      // Add word to submit box
+      const newSubmitData = _.cloneDeep(submitData);
+      newSubmitData.push(_clonedWord);
+      setSubmitData(newSubmitData);
+      // Remove word from box
+      const newData = _.cloneDeep(data);
+      const index = newData.findIndex((e) => e._id === _id);
+      newData.splice(index, 1);
+      setData(newData);
+    }
+  };
+  const handleSubmitData = (_id) => {
+    const _clonedWord = _.cloneDeep(
+      submitData.find((e) => {
+        return e._id === _id;
+      })
+    );
+    if (_clonedWord) {
+      // Add word to  box
+      const newData = _.cloneDeep(data);
+      newData.push(_clonedWord);
+      setData(newData);
+      // Remove word from submit box
+      const newSubmitData = _.cloneDeep(submitData);
+      const index = newSubmitData.findIndex((e) => e._id === _id);
+      newSubmitData.splice(index, 1);
+      setSubmitData(newSubmitData);
+    }
+  };
+  const RenderItem = ({ type }) => {
+    switch (type) {
+      case "singleSelection":
+        return <SingleSelection selections={singleSelection} />;
+      case "translate":
+        return <Translate />;
+      case "arrange":
+        return (
+          <Arrange
+            data={data}
+            submitData={submitData}
+            handleData={handleData}
+            handleSubmitData={handleSubmitData}
+          />
+        );
+    }
+  };
   return (
     <View style={styles.container}>
-      <SingleSelection />
+      <RenderItem type={type} />
     </View>
   );
 };

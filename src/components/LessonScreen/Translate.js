@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,7 @@ import color from "../../common/color";
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 const Translate = () => {
+  const [value, setValue] = useState("");
   return (
     <View style={styles.textAreaContainer}>
       <TextInput
@@ -23,6 +24,8 @@ const Translate = () => {
         numberOfLines={10}
         multiline={true}
         placeholder={"Nhập câu trả lời..."}
+        onChangeText={(text) => setValue(text)}
+        value={value}
       />
     </View>
   );
@@ -45,5 +48,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
     textAlignVertical: "top",
+    fontSize: 16,
   },
 });

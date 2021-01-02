@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
-import { Text } from "react-native";
-import { Button } from "react-native";
+import { Text, TouchableOpacity, Button } from "react-native";
 import { SafeAreaView } from "react-navigation";
 
-const FinishScreen = () => {
+const FinishScreen = ({ navigation }) => {
   return (
     <SafeAreaView forceInset={{ top: "always" }}>
-      <Text>Finish Screen</Text>
+      <Button
+        title={"Back to Topic"}
+        onPress={() => {
+          navigation.navigate("Topic");
+        }}
+      />
     </SafeAreaView>
   );
 };
