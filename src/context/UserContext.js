@@ -11,7 +11,6 @@ const userReducer = (state, action) => {
         user: action.payload.user,
         progresses: action.payload.progresses,
       };
-
     default:
       return state;
   }

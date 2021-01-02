@@ -55,6 +55,7 @@ const Header = ({
                     ...styles.openButton,
                     backgroundColor: color.blue,
                   }}
+                  onPress={toggleModal}
                 >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
@@ -96,6 +97,7 @@ const Header = ({
           color={"#fe346e"}
           style={styles.progressBar}
           borderRadius={15}
+          unfilledColor={"#ee9595"}
         />
         <Text style={styles.text}>
           {currentQuestion}/{totalQuestion}
@@ -136,8 +138,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 
-  progressBar: { marginHorizontal: 10 },
-  text: { marginLeft: 10, color: "#f8615a" },
+  progressBar: { marginHorizontal: 10, borderWidth: 0 },
+  text: {
+    marginLeft: 10,
+    color: "#f8615a",
+    fontWeight: "bold",
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",

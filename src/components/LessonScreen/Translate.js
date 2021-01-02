@@ -13,7 +13,7 @@ import color from "../../common/color";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
-const Translate = () => {
+const Translate = ({ onUserAnswer }) => {
   const [value, setValue] = useState("");
   return (
     <View style={styles.textAreaContainer}>
@@ -24,7 +24,10 @@ const Translate = () => {
         numberOfLines={10}
         multiline={true}
         placeholder={"Nhập câu trả lời..."}
-        onChangeText={(text) => setValue(text)}
+        onChangeText={(text) => {
+          setValue(text);
+          onUserAnswer(text);
+        }}
         value={value}
       />
     </View>

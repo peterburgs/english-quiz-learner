@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,35 +12,8 @@ import {
 import color from "../../common/color";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-// Mockup data
-// const selections = [
-//   {
-//     itemText: "A mango",
-//     textColor: "#000",
-//     backgroundColor: "fff",
-//     id: "4",
-//   },
-//   {
-//     itemText: "An apple",
-//     textColor: "#000",
-//     backgroundColor: "fff",
-//     id: "1",
-//   },
-//   {
-//     itemText: "An orange",
-//     textColor: "#000",
-//     backgroundColor: "fff",
-//     id: "2",
-//   },
-//   {
-//     itemText: "A banana",
-//     textColor: "#000",
-//     backgroundColor: "fff",
-//     id: "3",
-//   },
-// ];
 
-const SingleSelection = ({ selections }) => {
+const SingleSelection = ({ selections, onUserAnswer }) => {
   // State
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -68,12 +41,19 @@ const SingleSelection = ({ selections }) => {
       <Item
         item={item}
         // TODO: handle press a selection
-        onPress={() => setSelectedItem(item.order)}
+        onPress={() => {
+          setSelectedItem(item.order);
+        }}
         style={{ backgroundColor }}
         textColor={textColor}
       />
     );
   };
+
+  useEffect(() => {
+    onUserAnswer(selectedItem);
+  }, [selectedItem]);
+
   return (
     <View>
       <FlatList
@@ -91,21 +71,24 @@ export default SingleSelection;
 const styles = StyleSheet.create({
   buttonContainer: {
     alignSelf: "center",
-    marginBottom: 10,
+    marginBottom: 15,
     width: WIDTH * 0.9,
+    height: HEIGHT * 0.07,
     borderRadius: 20,
     padding: 10,
     shadowColor: color.shadowColor,
     shadowOffset: {
-      width: 0,
+      width: 2,
       height: 3,
     },
     shadowRadius: 5,
     shadowOpacity: 1.0,
+    justifyContent: "center",
   },
   itemText: {
     paddingHorizontal: 10,
     color: "#fff",
-    fontSize: 15,
+    fontSize: 16,
+    textAlign: "center",
   },
 });

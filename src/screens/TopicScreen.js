@@ -1,3 +1,5 @@
+console.disableYellowBox = true;
+
 import React, { useState, useEffect, useContext } from "react";
 import {
   FlatList,
@@ -19,12 +21,13 @@ import color from "../common/color";
 // Context
 import { Context as LevelContext } from "../context/LevelContext";
 import { Context as UserContext } from "../context/UserContext";
-
+import { Context as LessonContext } from "../context/LessonContext";
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 // Topic Screen
 const TopicScreen = ({ navigation }) => {
   const { state, getLevels } = useContext(LevelContext);
+  const { getQuestions } = useContext(LessonContext);
   const [currentTopicId, setCurrentTopicId] = useState(null);
   // Array tracks colors of lesson
   const [lessonColors, setLessonColors] = useState([
@@ -41,26 +44,54 @@ const TopicScreen = ({ navigation }) => {
         })
       : null;
 
-    if (index > topic.completedLesson + 1) {
-      Alert.alert(
-        "Hold up!",
-        "Looks like you haven't finished the previous lesson...",
-        [
-          {
-            text: "Understood",
-            onPress: () => {
-              console.log("Understood");
+    if (topic) {
+      if (index > topic.completedLesson + 1) {
+        Alert.alert(
+          "Hold up!",
+          "Looks like you haven't finished the previous lesson...",
+          [
+            {
+              text: "Understood",
+              onPress: () => {
+                console.log("Understood");
+              },
             },
-          },
-        ]
-      );
+          ]
+        );
+      } else {
+        navigation.navigate("Lesson", {
+          topicId: topicId,
+          lessonOrder: index,
+        });
+      }
+      setModalVisible(!isModalVisible);
     } else {
-      navigation.navigate("Lesson", {
-        topicId: topicId,
-        lessonOrder: index,
-      });
+      if (index > 1) {
+        Alert.alert(
+          "Hold up!",
+          "Looks like you haven't finished the previous lesson...",
+          [
+            {
+              text: "Understood",
+              onPress: () => {
+                console.log("Understood");
+              },
+            },
+          ]
+        );
+      } else {
+        try {
+          await getQuestions(topicId, index);
+          navigation.navigate("Lesson", {
+            topicId: topicId,
+            lessonOrder: index,
+          });
+        } catch (e) {
+          console.log("Do nothing");
+          console.log(e.message);
+        }
+      }
     }
-    setModalVisible(!isModalVisible);
   };
 
   const userContext = useContext(UserContext);

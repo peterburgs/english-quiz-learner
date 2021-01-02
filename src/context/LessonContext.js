@@ -5,18 +5,22 @@ import EnglishQuizApi from "../api/EnglishQuizApi";
 // lesson Reducer
 const lessonReducer = (state, action) => {
   switch (action.type) {
+    case "get_questions":
+      return { ...state, questions: action.payload.questions };
     default:
       return state;
   }
 };
 
 // Get all questions belong to the Lesson based on lessonOrder
-const getLesson = (dispatch) => async () => {
+const getQuestions = (dispatch) => async (topicId, lessonOrder) => {
   try {
-    const response = await EnglishQuizApi.get("/levels");
+    const response = await EnglishQuizApi.get("/questions", {
+      params: { topicId, lessonOrder },
+    });
     dispatch({
-      type: "get_levels",
-      payload: response.data.level,
+      type: "get_questions",
+      payload: response.data,
     });
   } catch (err) {
     console.log("Level context error: \n", err);
@@ -24,6 +28,6 @@ const getLesson = (dispatch) => async () => {
 };
 export const { Provider, Context } = createDataContext(
   lessonReducer,
-  {},
-  { lesson: null }
+  { getQuestions },
+  { questions: [] }
 );

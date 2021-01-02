@@ -29,6 +29,7 @@ import CommentScreen from "./src/screens/CommentScreen";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as UserProvider } from "./src/context/UserContext";
 import { Provider as LevelProvider } from "./src/context/LevelContext";
+import { Provider as LessonProvider } from "./src/context/LessonContext";
 
 import { setNavigator } from "./src/common/navigationRef";
 
@@ -142,11 +143,13 @@ export default () => {
       <AuthProvider>
         <UserProvider>
           <LevelProvider>
-            <App
-              ref={(navigator) => {
-                setNavigator(navigator);
-              }}
-            />
+            <LessonProvider>
+              <App
+                ref={(navigator) => {
+                  setNavigator(navigator);
+                }}
+              />
+            </LessonProvider>
           </LevelProvider>
         </UserProvider>
       </AuthProvider>

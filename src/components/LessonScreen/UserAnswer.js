@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -25,9 +25,11 @@ const UserAnswer = ({
   singleSelection,
   translate,
   arrange,
+  onUserAnswer,
 }) => {
   // Clone arrange
-  const [data, setData] = useState(_.cloneDeep(arrange));
+  const [data, setData] = useState(arrange);
+
   const [submitData, setSubmitData] = useState([]);
 
   const handleData = (_id) => {
@@ -46,6 +48,8 @@ const UserAnswer = ({
       const index = newData.findIndex((e) => e._id === _id);
       newData.splice(index, 1);
       setData(newData);
+      // Send user answer
+      onUserAnswer(newSubmitData);
     }
   };
   const handleSubmitData = (_id) => {
@@ -64,14 +68,21 @@ const UserAnswer = ({
       const index = newSubmitData.findIndex((e) => e._id === _id);
       newSubmitData.splice(index, 1);
       setSubmitData(newSubmitData);
+      // Send user answer
+      onUserAnswer(newSubmitData);
     }
   };
   const RenderItem = ({ type }) => {
     switch (type) {
       case "singleSelection":
-        return <SingleSelection selections={singleSelection} />;
+        return (
+          <SingleSelection
+            onUserAnswer={onUserAnswer}
+            selections={singleSelection}
+          />
+        );
       case "translate":
-        return <Translate />;
+        return <Translate onUserAnswer={onUserAnswer} />;
       case "arrange":
         return (
           <Arrange
@@ -83,6 +94,10 @@ const UserAnswer = ({
         );
     }
   };
+  useEffect(() => {
+    setData(arrange);
+    setSubmitData([]);
+  }, [arrange]);
   return (
     <View style={styles.container}>
       <RenderItem type={type} />
