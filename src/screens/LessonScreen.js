@@ -52,6 +52,8 @@ const LessonScreen = ({ navigation }) => {
       console.log("Finish lesson");
       navigation.navigate("Finish", {
         correctAnswers: correctAnswers,
+        topicId,
+        lessonOrder,
       });
     }
   };

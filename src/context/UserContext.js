@@ -11,6 +11,8 @@ const userReducer = (state, action) => {
         user: action.payload.user,
         progresses: action.payload.progresses,
       };
+    case "add_progresses":
+      return {};
     default:
       return state;
   }
@@ -25,6 +27,12 @@ const getUser = (dispatch) => async () => {
     });
   } catch (err) {
     console.log("User context error: \n", err);
+  }
+};
+const addProgresses = (dispatch) => async () => {
+  try {
+  } catch (err) {
+    console.log(err.message);
   }
 };
 
