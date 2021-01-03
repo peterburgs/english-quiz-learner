@@ -7,6 +7,7 @@ const lessonReducer = (state, action) => {
   switch (action.type) {
     case "get_questions":
       return { ...state, questions: action.payload.questions };
+
     default:
       return state;
   }
@@ -26,6 +27,7 @@ const getQuestions = (dispatch) => async (topicId, lessonOrder) => {
     console.log("Level context error: \n", err);
   }
 };
+
 export const { Provider, Context } = createDataContext(
   lessonReducer,
   { getQuestions },

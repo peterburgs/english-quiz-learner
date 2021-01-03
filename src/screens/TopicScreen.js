@@ -24,6 +24,10 @@ import { Context as UserContext } from "../context/UserContext";
 import { Context as LessonContext } from "../context/LessonContext";
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
+// Import Icons
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+
 // Topic Screen
 const TopicScreen = ({ navigation }) => {
   const { state, getLevels } = useContext(LevelContext);
