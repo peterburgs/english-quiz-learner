@@ -1,4 +1,4 @@
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 import React, { useContext } from "react";
 import {
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  LogBox,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 
@@ -17,17 +18,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 // Context
+import { Context as UserContext } from "../context/UserContext";
 
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
 const FinishScreen = ({ navigation }) => {
   const score = navigation.getParam("correctAnswers");
-  const topicId = navigation.getParam("topicId");
-  const lessonOrder = navigation.getParam("lessonOrder");
   const handleFinish = () => {
-    //
-
     // Go back to Topic screen
     navigation.navigate("Topic");
   };

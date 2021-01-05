@@ -1,4 +1,5 @@
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
+
 import React, { useContext, useState, useEffect } from "react";
 import {
   View,
@@ -8,12 +9,17 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  LogBox,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
+import _ from "lodash";
+// pacman
+import { PacmanIndicator } from "react-native-indicators";
 
 // Context
 import { Context } from "../context/AuthContext";
 import { Context as LessonContext } from "../context/LessonContext";
+import { Context as UserContext } from "../context/UserContext";
 // Modal
 import Modal from "react-native-modal";
 
@@ -26,12 +32,22 @@ import QuestionText from "../components/LessonScreen/QuestionText";
 import UserAnswer from "../components/LessonScreen/UserAnswer";
 import color from "../common/color";
 
+// Score weight
+let scoreWeight = 1;
+
 // Import Hooks
 import useScoring from "../hooks/useScoring";
 
 // LessonScreen
 const LessonScreen = ({ navigation }) => {
   const { state, getQuestions } = useContext(LessonContext);
+  const {
+    state: userState,
+    getUser,
+    updateProgress,
+    addProgress,
+    updateUser,
+  } = useContext(UserContext);
   const [scoring] = useScoring();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -39,21 +55,36 @@ const LessonScreen = ({ navigation }) => {
   // ProgressBar
   const [progress, setProgress] = useState(0);
 
-  //TODO: use topicId & lessonOrder
   const topicId = navigation.getParam("topicId");
   const lessonOrder = navigation.getParam("lessonOrder");
 
-  // Handle when user press Check button
-  const handleCheck = () => {
+  // Update header bar, update user. Navigate to finish screen at the end
+  const handleCheck = async () => {
     if (currentQuestionIndex < state.questions.length - 1) {
       setCurrentQuestionIndex((pre) => pre + 1);
     } else {
-      // TODO: navigate to lesson screen when user finish all questions
       console.log("Finish lesson");
+      const progresses = userState.progresses
+        ? userState.progresses.find((item) => item.topic === topicId)
+        : null;
+      if (progresses) {
+        if (progresses.completedLesson < lessonOrder) {
+          scoreWeight = 5;
+          await updateProgress(progresses._id, lessonOrder);
+        } else {
+          scoreWeight = 1;
+        }
+      } else {
+        scoreWeight = 5;
+        await addProgress(topicId, userState.user._id);
+      }
+      const clonedUser = _.cloneDeep(userState.user);
+      clonedUser.coin += scoreWeight;
+      clonedUser.exp += scoreWeight * 10;
+      console.log("clonedUser", clonedUser);
+      await updateUser(clonedUser);
       navigation.navigate("Finish", {
-        correctAnswers: correctAnswers,
-        topicId,
-        lessonOrder,
+        correctAnswers: scoreWeight,
       });
     }
   };
@@ -72,10 +103,10 @@ const LessonScreen = ({ navigation }) => {
   // systemResult is the answer of system
   const [systemResult, setSystemResult] = useState(null);
 
-  const toggleModal = () => {
+  const toggleModal = async () => {
     setModalVisible(!isModalVisible);
     if (isModalVisible) {
-      handleCheck();
+      await handleCheck();
     }
     if (!isModalVisible) {
       setUserResult(
@@ -172,13 +203,23 @@ const LessonScreen = ({ navigation }) => {
                 resizeMode={"contain"}
               />
             )}
-
+            {/*  */}
             <TouchableOpacity
-              style={styles.openButton}
+              style={styles.submitButton}
               onPress={toggleModal}
+              disabled={userState.isTouchable}
             >
-              <Text style={styles.textStyle}>Tiếp tục</Text>
+              {userState.isLoading == true ? (
+                <PacmanIndicator
+                  hidesWhenStopped={true}
+                  animating={userState.isLoading}
+                  color="#eeeded"
+                />
+              ) : (
+                <Text style={styles.textStyle}>Tiếp tục</Text>
+              )}
             </TouchableOpacity>
+            {/*  */}
           </View>
         </View>
       </Modal>
@@ -236,13 +277,13 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     justifyContent: "space-around",
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 1,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
     width: WIDTH * 0.8,
     maxWidth: WIDTH * 0.9,
@@ -280,5 +321,19 @@ const styles = StyleSheet.create({
     width: WIDTH * 0.5,
     height: HEIGHT * 0.2,
     marginBottom: 10,
+  },
+  submitButton: {
+    backgroundColor: "#07689f",
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    width: WIDTH * 0.5,
+    height: 50,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 19,
+    alignSelf: "center",
   },
 });
