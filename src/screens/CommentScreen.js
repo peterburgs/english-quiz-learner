@@ -1,8 +1,8 @@
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 import React, { useContext } from "react";
 import { Text } from "react-native";
-import { Button } from "react-native";
+import { Button, LogBox } from "react-native";
 import { SafeAreaView } from "react-navigation";
 
 const CommentScreen = ({ navigation }) => {

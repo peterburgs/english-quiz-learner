@@ -6,7 +6,12 @@ import EnglishQuizApi from "../api/EnglishQuizApi";
 const lessonReducer = (state, action) => {
   switch (action.type) {
     case "get_questions":
-      return { ...state, questions: action.payload.questions };
+      return {
+        ...state,
+        questions: action.payload.questions.sort(
+          () => Math.random() - 0.5 //<== Magic code
+        ),
+      };
 
     default:
       return state;

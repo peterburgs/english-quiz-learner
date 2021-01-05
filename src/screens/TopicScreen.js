@@ -1,4 +1,4 @@
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 import React, { useState, useEffect, useContext } from "react";
 import {
@@ -11,6 +11,7 @@ import {
   Alert,
   ImageBackground,
   ScrollView,
+  LogBox,
 } from "react-native";
 import Modal from "react-native-modal";
 // Import components
@@ -63,6 +64,7 @@ const TopicScreen = ({ navigation }) => {
           ]
         );
       } else {
+        await getQuestions(topicId, index);
         navigation.navigate("Lesson", {
           topicId: topicId,
           lessonOrder: index,
@@ -207,24 +209,21 @@ const TopicScreen = ({ navigation }) => {
                   level={item}
                   pointerEvents={
                     userContext.state.user
-                      ? userContext.state.user.currentLevelOrder >=
-                        item.order
+                      ? userContext.state.user.exp >= item.requiredExp
                         ? "auto"
                         : "none"
                       : "auto"
                   }
                   message={
                     userContext.state.user
-                      ? userContext.state.user.currentLevelOrder >=
-                        item.order
+                      ? userContext.state.user.exp >= item.requiredExp
                         ? null
-                        : "Finish previous level to unlock this"
+                        : "Accumulate more exp to unlock!"
                       : null
                   }
                   opacityRate={
                     userContext.state.user
-                      ? userContext.state.user.currentLevelOrder >=
-                        item.order
+                      ? userContext.state.user.exp >= item.requiredExp
                         ? 1
                         : 0.4
                       : 1

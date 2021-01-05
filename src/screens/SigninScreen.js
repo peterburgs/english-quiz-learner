@@ -1,4 +1,4 @@
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs();
 
 import React, { useContext } from "react";
 import { Image } from "react-native";
@@ -8,6 +8,7 @@ import {
   View,
   Dimensions,
   ImageBackground,
+  LogBox,
 } from "react-native";
 import { NavigationEvents, SafeAreaView } from "react-navigation";
 import AuthForm from "../components/AuthForm/AuthForm";

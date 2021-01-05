@@ -13,6 +13,10 @@ const userReducer = (state, action) => {
       };
     case "add_progresses":
       return {};
+    case "toggle_is_loading":
+      return { ...state, isLoading: !state.isLoading };
+    case "toggle_is_touchable":
+      return { ...state, isTouchable: !state.isTouchable };
     default:
       return state;
   }
@@ -21,16 +25,62 @@ const userReducer = (state, action) => {
 const getUser = (dispatch) => async () => {
   try {
     const response = await EnglishQuizApi.get("/users");
+    const progresses = await EnglishQuizApi.get("/progresses", {
+      params: { userId: response.data.user._id },
+    });
     dispatch({
       type: "get_user",
-      payload: response.data,
+      payload: {
+        user: response.data.user,
+        progresses: progresses.data.progresses,
+      },
     });
   } catch (err) {
     console.log("User context error: \n", err);
   }
 };
-const addProgresses = (dispatch) => async () => {
+const updateUser = (dispatch) => async (user) => {
   try {
+    console.log("user", user);
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    const response = await EnglishQuizApi.put(
+      `/users/${user._id}`,
+      user
+    );
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+const addProgress = (dispatch) => async (topicId, userId) => {
+  try {
+    const response = await EnglishQuizApi.post("/progresses", {
+      topicId: topicId,
+      userId: userId,
+      completedLesson: 1,
+    });
+    console.log("addProgress");
+    getUser();
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+const updateProgress = (dispatch) => async (
+  progressId,
+  lessonOrder
+) => {
+  try {
+    const response = await EnglishQuizApi.put(
+      `/progresses/${progressId}`,
+      {
+        lessonOrder,
+      }
+    );
+    console.log("updateProgress");
+
+    getUser();
   } catch (err) {
     console.log(err.message);
   }
@@ -38,6 +88,11 @@ const addProgresses = (dispatch) => async () => {
 
 export const { Provider, Context } = createDataContext(
   userReducer,
-  { getUser },
-  { user: null, progresses: null }
+  { getUser, updateProgress, addProgress, updateUser },
+  {
+    user: null,
+    progresses: [],
+    isTouchable: false,
+    isLoading: false,
+  }
 );

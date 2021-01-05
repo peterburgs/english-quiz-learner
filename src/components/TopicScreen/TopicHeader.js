@@ -56,24 +56,6 @@ const TopicHeader = () => {
           {state.user ? format(state.user.exp) : 0}
         </Text>
       </View>
-
-      {/* Streaks */}
-      <View style={{ flexDirection: "row" }}>
-        <MaterialCommunityIcons
-          name="fire"
-          size={33}
-          color="#f64b3c"
-        />
-        <Text
-          style={{
-            alignSelf: "center",
-            fontWeight: "bold",
-            color: "#f64b3c",
-          }}
-        >
-          {state.user ? format(state.user.streak) : 0}
-        </Text>
-      </View>
     </View>
   );
 };
