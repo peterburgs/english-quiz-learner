@@ -1,6 +1,6 @@
 LogBox.ignoreAllLogs();
 
-import React from "react";
+import React, { useContext } from "react";
 import {
   Text,
   LogBox,
@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 
@@ -18,97 +19,172 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
-
+// Context
+import { Context as UserContext } from "../context/UserContext";
 // Color
 import color from "../common/color";
 import { stubFalse } from "lodash";
 const ShopScreen = () => {
+  const { state, purchase } = useContext(UserContext);
+
+  const handlePurchase = async (item) => {
+    if (item) {
+      await purchase(state.user._id, item);
+    }
+  };
+
   return (
     <SafeAreaView
       forceInset={{ top: "always" }}
       style={styles.container}
     >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginBottom: 20,
+        }}
+      >
+        <FontAwesome5 name="piggy-bank" size={30} color="#ffa41b" />
+        <Text
+          style={{
+            alignSelf: "center",
+            fontWeight: "bold",
+            color: "#ffa41b",
+            marginLeft: 5,
+          }}
+        >
+          {/* TODO: fetch user coin here */}
+          &nbsp;{state.user.coin}
+        </Text>
+      </View>
       {/* X2 exp */}
-      <View style={styles.x2Container}>
-        <View style={styles.x2SubContainer}>
-          <Image
-            source={require("../../assets/x2.png")}
-            style={styles.image}
-            resizeMode={"contain"}
-          />
-          <View style={styles.rightSide}>
-            {/* Item title */}
-            <Text style={styles.itemTitle}>Nhân 2 kinh nghiệm</Text>
-            <Text style={styles.itemDescription} numberOfLine={2}>
-              Bạn sẽ được nhân đôi kinh nghiệm trong vòng 24 giờ.
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <FontAwesome5
-                name="piggy-bank"
-                size={30}
-                color="#ffa41b"
-              />
-              <Text
-                style={{
-                  alignSelf: "center",
-                  fontWeight: "bold",
-                  color: "#ffa41b",
-                  marginLeft: 5,
-                }}
-              >
-                {/* TODO: fetch user coin here */}
-                &nbsp;30
+      <TouchableOpacity
+        onPress={() => handlePurchase("x2")}
+        disabled={
+          state.user
+            ? state.user.coin < 30 || state.user.hasX2Exp
+              ? true
+              : false
+            : true
+        }
+        style={{
+          opacity: state.user
+            ? state.user.coin < 30 || state.user.hasX2Exp
+              ? 0.5
+              : 1
+            : 1,
+        }}
+      >
+        <View style={styles.x2Container}>
+          <View style={styles.x2SubContainer}>
+            <Image
+              source={require("../../assets/x2.png")}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
+            <View style={styles.rightSide}>
+              {/* Item title */}
+              <Text style={styles.itemTitle}>Nhân 2 kinh nghiệm</Text>
+              <Text style={styles.itemDescription} numberOfLine={2}>
+                Bạn sẽ được nhân đôi kinh nghiệm trong vòng 24 giờ.
               </Text>
+              {state.user ? (
+                state.user.hasX2Exp ? (
+                  <Text style={{ color: "red" }}>Đã mua</Text>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FontAwesome5
+                      name="piggy-bank"
+                      size={30}
+                      color="#ffa41b"
+                    />
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "bold",
+                        color: "#ffa41b",
+                        marginLeft: 5,
+                      }}
+                    >
+                      &nbsp;30
+                    </Text>
+                  </View>
+                )
+              ) : null}
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* X5 exp */}
-      <View style={styles.x2Container}>
-        <View style={styles.x2SubContainer}>
-          <Image
-            source={require("../../assets/x5.png")}
-            style={styles.image}
-            resizeMode={"contain"}
-          />
-          <View style={styles.rightSide}>
-            {/* Item title */}
-            <Text style={styles.itemTitle}>Nhân 5 kinh nghiệm</Text>
-            <Text style={styles.itemDescription} numberOfLine={2}>
-              Bạn sẽ được nhân năm kinh nghiệm trong vòng 24 giờ.
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <FontAwesome5
-                name="piggy-bank"
-                size={30}
-                color="#ffa41b"
-              />
-              <Text
-                style={{
-                  alignSelf: "center",
-                  fontWeight: "bold",
-                  color: "#ffa41b",
-                  marginLeft: 5,
-                }}
-              >
-                {/* TODO: fetch user coin here */}
-                &nbsp;50
+      <TouchableOpacity
+        onPress={() => handlePurchase("x5")}
+        disabled={
+          state.user
+            ? state.user.coin < 50 || state.user.hasX5Exp
+              ? true
+              : false
+            : true
+        }
+        style={{
+          opacity: state.user
+            ? state.user.coin < 50 || state.user.hasX5Exp
+              ? 0.5
+              : 1
+            : 1,
+        }}
+      >
+        <View style={styles.x2Container}>
+          <View style={styles.x2SubContainer}>
+            <Image
+              source={require("../../assets/x5.png")}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
+            <View style={styles.rightSide}>
+              {/* Item title */}
+              <Text style={styles.itemTitle}>Nhân 5 kinh nghiệm</Text>
+              <Text style={styles.itemDescription} numberOfLine={2}>
+                Bạn sẽ được nhân năm kinh nghiệm trong vòng 24 giờ.
               </Text>
+              {state.user ? (
+                state.user.hasX5Exp ? (
+                  <Text style={{ color: "red" }}>Đã mua</Text>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FontAwesome5
+                      name="piggy-bank"
+                      size={30}
+                      color="#ffa41b"
+                    />
+                    <Text
+                      style={{
+                        alignSelf: "center",
+                        fontWeight: "bold",
+                        color: "#ffa41b",
+                        marginLeft: 5,
+                      }}
+                    >
+                      &nbsp;50
+                    </Text>
+                  </View>
+                )
+              ) : null}
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -146,7 +222,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
   },
   x2SubContainer: {
     flex: 1,
@@ -175,25 +250,6 @@ const styles = StyleSheet.create({
   },
 });
 
-ShopScreen.navigationOptions = () => {
-  return {
-    headerTitle: () => (
-      <View
-        style={{ flexDirection: "row", justifyContent: "center" }}
-      >
-        <FontAwesome5 name="piggy-bank" size={30} color="#ffa41b" />
-        <Text
-          style={{
-            alignSelf: "center",
-            fontWeight: "bold",
-            color: "#ffa41b",
-            marginLeft: 5,
-          }}
-        >
-          {/* TODO: fetch user coin here */}
-          &nbsp;0
-        </Text>
-      </View>
-    ),
-  };
+ShopScreen.navigationOptions = {
+  headerShown: false,
 };

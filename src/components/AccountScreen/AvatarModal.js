@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,8 +19,22 @@ import Modal from "react-native-modal";
 
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
+// Context
+import { Context as UserContext } from "../../context/UserContext";
 
 const AvatarModal = ({ isModalVisible, toggleModal }) => {
+  const { state, updateUser, clearUpdateUserMessage } = useContext(
+    UserContext
+  );
+  // Set avatar
+  const [avatar, setAvatar] = useState("");
+  const handleAvatar = async (avatarName) => {
+    setAvatar(avatarName);
+    // update
+    state.user.avatarUrl = avatarName;
+    await updateUser(state.user);
+    toggleModal();
+  };
   return (
     <View style={styles.container}>
       <Modal
@@ -40,65 +54,107 @@ const AvatarModal = ({ isModalVisible, toggleModal }) => {
             {/* Images*/}
             <View style={{ flexDirection: "row" }}>
               {/* Image 1 */}
-              <Image
-                source={require("../../../assets/avatars/avatar1.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar1")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar1.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 2 */}
-              <Image
-                source={require("../../../assets/avatars/avatar2.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar2")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar2.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 3 */}
-              <Image
-                source={require("../../../assets/avatars/avatar3.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar3")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar3.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
             </View>
             {/* Images*/}
             <View style={{ flexDirection: "row" }}>
               {/* Image 4 */}
-              <Image
-                source={require("../../../assets/avatars/avatar4.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar4")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar4.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 5 */}
-              <Image
-                source={require("../../../assets/avatars/avatar5.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar5")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar5.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 6 */}
-              <Image
-                source={require("../../../assets/avatars/avatar6.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar6")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar6.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
             </View>
             {/* Images*/}
             <View style={{ flexDirection: "row" }}>
               {/* Image 7 */}
-              <Image
-                source={require("../../../assets/avatars/avatar7.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar7")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar7.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 8 */}
-              <Image
-                source={require("../../../assets/avatars/avatar8.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar8")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar8.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
+
               {/* Image 9 */}
-              <Image
-                source={require("../../../assets/avatars/avatar9.png")}
-                style={styles.image}
-                resizeMode={"contain"}
-              />
+              <TouchableOpacity
+                onPress={() => handleAvatar("avatar9")}
+              >
+                <Image
+                  source={require("../../../assets/avatars/avatar9.png")}
+                  style={styles.image}
+                  resizeMode={"contain"}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.bottomBar}></View>
           </View>
@@ -134,7 +190,7 @@ const styles = StyleSheet.create({
     width: WIDTH * 0.95,
     maxWidth: WIDTH * 0.95,
     minHeight: HEIGHT * 0.2,
-    maxHeight: HEIGHT * 0.9,
+    maxHeight: HEIGHT * 0.8,
   },
   modalText: {
     fontWeight: "bold",

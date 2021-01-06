@@ -24,7 +24,9 @@ import { Context as UserContext } from "../context/UserContext";
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
 const FinishScreen = ({ navigation }) => {
-  const score = navigation.getParam("correctAnswers");
+  const { state } = useContext(UserContext);
+  const coin = navigation.getParam("coin");
+  const exp = navigation.getParam("exp");
   const handleFinish = () => {
     // Go back to Topic screen
     navigation.navigate("Topic");
@@ -61,7 +63,7 @@ const FinishScreen = ({ navigation }) => {
               fontSize: 20,
             }}
           >
-            &nbsp;+{score}
+            &nbsp;+{coin}
           </Text>
         </View>
 
@@ -80,11 +82,31 @@ const FinishScreen = ({ navigation }) => {
               fontSize: 20,
             }}
           >
-            &nbsp;+{score * 10}
+            &nbsp;+{exp}
           </Text>
         </View>
       </View>
+      <View style={styles.bonusContainer}>
+        {state.user ? (
+          state.user.hasX2Exp ? (
+            <Image
+              source={require("../../assets/x2.png")}
+              style={styles.bonusImage}
+              resizeMode={"contain"}
+            />
+          ) : null
+        ) : null}
 
+        {state.user ? (
+          state.user.hasX5Exp ? (
+            <Image
+              source={require("../../assets/x5.png")}
+              style={styles.bonusImage}
+              resizeMode={"contain"}
+            />
+          ) : null
+        ) : null}
+      </View>
       {/* Go back to Lesson screen   */}
       <TouchableOpacity style={styles.button} onPress={handleFinish}>
         <Text style={styles.buttonText}>TRỞ VỀ</Text>
@@ -139,5 +161,15 @@ const styles = StyleSheet.create({
   content: {
     textAlign: "center",
     alignItems: "center",
+  },
+  bonusImage: {
+    width: WIDTH * 0.2,
+    height: WIDTH * 0.2,
+    alignSelf: "center",
+  },
+  bonusContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 50,
   },
 });

@@ -17,6 +17,21 @@ const userReducer = (state, action) => {
       return { ...state, isLoading: !state.isLoading };
     case "toggle_is_touchable":
       return { ...state, isTouchable: !state.isTouchable };
+    case "error_message":
+      return { ...state, errorMessage: action.payload };
+    case "reset_password_success_message":
+      return {
+        ...state,
+        resetPasswordSuccessMessage: "Password updated successfully!",
+        errorMessage: "",
+      };
+    case "update_user_success_message":
+      return {
+        ...state,
+        updateUserSuccessMessage: "Updated successfully!",
+      };
+    case "clear_update_user_message":
+      return { ...state, updateUserSuccessMessage: "" };
     default:
       return state;
   }
@@ -50,10 +65,42 @@ const updateUser = (dispatch) => async (user) => {
     );
     dispatch({ type: "toggle_is_loading" });
     dispatch({ type: "toggle_is_touchable" });
+    dispatch({ type: "update_user_success_message" });
   } catch (err) {
     console.log(err.message);
   }
 };
+
+const purchase = (dispatch) => async (userId, item) => {
+  try {
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    const purchaseResult = await EnglishQuizApi.put(
+      `/users/${userId}/purchase`,
+      { item }
+    );
+    const getUserResult = await EnglishQuizApi.get("/users");
+    const getProgressesResult = await EnglishQuizApi.get(
+      "/progresses",
+      {
+        params: { userId: getUserResult.data.user._id },
+      }
+    );
+    dispatch({
+      type: "get_user",
+      payload: {
+        user: getUserResult.data.user,
+        progresses: getProgressesResult.data.progresses,
+      },
+    });
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    dispatch({ type: "update_user_success_message" });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 const addProgress = (dispatch) => async (topicId, userId) => {
   try {
     const response = await EnglishQuizApi.post("/progresses", {
@@ -85,14 +132,55 @@ const updateProgress = (dispatch) => async (
     console.log(err.message);
   }
 };
+const resetPassword = (dispatch) => async (
+  currentPassword,
+  newPassword
+) => {
+  try {
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    const response = await EnglishQuizApi.post("/reset", {
+      currentPassword,
+      newPassword,
+    });
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    dispatch({ type: "reset_password_success_message" });
+  } catch (err) {
+    dispatch({ type: "toggle_is_loading" });
+    dispatch({ type: "toggle_is_touchable" });
+    dispatch({
+      type: "error_message",
+      payload: "Wrong current password",
+    });
+    console.log("====================================");
+    console.log(err.message);
+    console.log("====================================");
+  }
+};
+
+const clearUpdateUserMessage = (dispatch) => () => {
+  dispatch({ type: "clear_update_user_message" });
+};
 
 export const { Provider, Context } = createDataContext(
   userReducer,
-  { getUser, updateProgress, addProgress, updateUser },
+  {
+    getUser,
+    updateProgress,
+    addProgress,
+    updateUser,
+    resetPassword,
+    clearUpdateUserMessage,
+    purchase,
+  },
   {
     user: null,
     progresses: [],
     isTouchable: false,
     isLoading: false,
+    errorMessage: "",
+    resetPasswordSuccessMessage: "",
+    updateUserSuccessMessage: "",
   }
 );

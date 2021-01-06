@@ -79,12 +79,15 @@ const LessonScreen = ({ navigation }) => {
         await addProgress(topicId, userState.user._id);
       }
       const clonedUser = _.cloneDeep(userState.user);
+      const isHasX2 = userState.user.hasX2Exp ? 2 : 1;
+      const isHasX5 = userState.user.hasX5Exp ? 5 : 1;
       clonedUser.coin += scoreWeight;
-      clonedUser.exp += scoreWeight * 10;
+      clonedUser.exp += scoreWeight * 10 * isHasX2 * isHasX5;
       console.log("clonedUser", clonedUser);
       await updateUser(clonedUser);
       navigation.navigate("Finish", {
-        correctAnswers: scoreWeight,
+        coin: scoreWeight,
+        exp: scoreWeight * 10 * isHasX2 * isHasX5,
       });
     }
   };
@@ -137,6 +140,10 @@ const LessonScreen = ({ navigation }) => {
       }
     }
   };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <SafeAreaView

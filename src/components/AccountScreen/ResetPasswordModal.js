@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,11 +12,18 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 // Modal
 import Modal from "react-native-modal";
+import color from "../../common/color";
+import { PacmanIndicator } from "react-native-indicators";
+
+// Context
+import { Context as UserContext } from "../../context/UserContext";
 
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
 const ResetPasswordModal = ({ isModalVisible, toggleModal }) => {
+  const { state, resetPassword } = useContext(UserContext);
+
   // Current Password
   const [currentPassword, setCurrentPassword] = useState("");
   const [viewCurrentPassword, setViewCurrentPassword] = useState(
@@ -38,6 +45,14 @@ const ResetPasswordModal = ({ isModalVisible, toggleModal }) => {
     setNewIcon((newIcon) => {
       return newIcon == "ios-eye" ? "ios-eye-off" : "ios-eye";
     });
+  };
+
+  // Function to handle reset password
+
+  const handleSubmit = async () => {
+    if (currentPassword && newPassword) {
+      await resetPassword(currentPassword, newPassword);
+    }
   };
   return (
     <View style={styles.container}>
@@ -119,14 +134,46 @@ const ResetPasswordModal = ({ isModalVisible, toggleModal }) => {
                 secureTextEntry={viewNewPassword}
               />
             </View>
+            {state.errorMessage ? (
+              <Text style={styles.errorMessage}>
+                {state.errorMessage}
+              </Text>
+            ) : null}
+            {state.resetPasswordSuccessMessage ? (
+              <Text style={styles.successMessage}>
+                {state.resetPasswordSuccessMessage}
+              </Text>
+            ) : null}
+            <View style={{ flexDirection: "row" }}>
+              {/* Confirm Change Password */}
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleSubmit}
+              >
+                {state.isLoading == true ? (
+                  <PacmanIndicator
+                    hidesWhenStopped={true}
+                    animating={state.isLoading}
+                    color="#eeeded"
+                  />
+                ) : (
+                  <Text style={styles.submitButtonText}>
+                    XÁC NHẬN
+                  </Text>
+                )}
+              </TouchableOpacity>
 
-            {/* Confirm Change Password */}
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={toggleModal}
-            >
-              <Text style={styles.submitButtonText}>XÁC NHẬN</Text>
-            </TouchableOpacity>
+              {/* Cancel Change Password */}
+              <TouchableOpacity
+                style={{
+                  ...styles.submitButton,
+                  backgroundColor: color.red,
+                }}
+                onPress={toggleModal}
+              >
+                <Text style={styles.submitButtonText}>ĐÓNG</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -180,8 +227,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    width: WIDTH * 0.4,
-    height: 50,
+    width: WIDTH * 0.3,
+    height: 45,
+    marginHorizontal: 5,
   },
   submitButtonText: {
     color: "#fff",
@@ -202,5 +250,19 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: "transparent",
     paddingHorizontal: 10,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "red",
+    marginBottom: 10,
+    marginHorizontal: 10,
+    alignSelf: "center",
+  },
+  successMessage: {
+    fontSize: 16,
+    color: "green",
+    marginBottom: 10,
+    marginHorizontal: 10,
+    alignSelf: "center",
   },
 });

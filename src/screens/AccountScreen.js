@@ -1,5 +1,5 @@
 LogBox.ignoreAllLogs();
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Input } from "react-native-elements";
 import { SafeAreaView } from "react-navigation";
+import { Button, Snackbar } from "react-native-paper";
 import color from "../common/color";
 // Import Icons
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,20 +24,65 @@ const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
 // Context
 import { Context } from "../context/AuthContext";
+import { Context as UserContext } from "../context/UserContext";
 
 // Components
 import ResetPasswordModal from "../components/AccountScreen/ResetPasswordModal";
 import AvatarModal from "../components/AccountScreen/AvatarModal";
 
 const AccountScreen = () => {
-  const { signout } = useContext(Context);
-  const [fullName, setFullName] = useState("");
+  // Avatar Selection
+  const avatar1 = require("../../assets/avatars/avatar1.png");
+  const avatar2 = require("../../assets/avatars/avatar2.png");
+  const avatar3 = require("../../assets/avatars/avatar3.png");
+  const avatar4 = require("../../assets/avatars/avatar4.png");
+  const avatar5 = require("../../assets/avatars/avatar5.png");
+  const avatar6 = require("../../assets/avatars/avatar6.png");
+  const avatar7 = require("../../assets/avatars/avatar7.png");
+  const avatar8 = require("../../assets/avatars/avatar8.png");
+  const avatar9 = require("../../assets/avatars/avatar9.png");
 
+  const mapAvatar = (avatarUrl) => {
+    switch (avatarUrl) {
+      case "avatar1":
+        return avatar1;
+      case "avatar2":
+        return avatar2;
+      case "avatar3":
+        return avatar3;
+      case "avatar4":
+        return avatar4;
+      case "avatar5":
+        return avatar5;
+      case "avatar6":
+        return avatar6;
+      case "avatar7":
+        return avatar7;
+      case "avatar8":
+        return avatar8;
+      case "avatar9":
+        return avatar9;
+      default:
+        return avatar1;
+    }
+  };
+
+  const { signout } = useContext(Context);
+  const { state, updateUser, clearUpdateUserMessage } = useContext(
+    UserContext
+  );
+
+  const [fullName, setFullName] = useState("");
+  const [createdAt, setCreatedAt] = useState(null);
+  const [coin, setCoin] = useState(0);
+  const [exp, setExp] = useState(0);
+  const [avatarUrl, setAvatarUrl] = useState("avatar2.png");
   const handleSignOut = () => {
     signout();
   };
-  const handleSave = () => {
-    console.log("Saved");
+  const handleSave = async () => {
+    state.user.fullName = fullName;
+    await updateUser(state.user);
   };
   // Toggle Reset Password Modal
   const [
@@ -56,7 +102,18 @@ const AccountScreen = () => {
   const toggleChangeAvatar = async () => {
     setChangeAvatarModalVisible(!isChangeAvatarModalVisible);
   };
+  // Use Effect
 
+  useEffect(() => {
+    if (state.user) {
+      console.log(state.user);
+      setFullName(state.user.fullName);
+      setCreatedAt(new Date(state.user.createdAt));
+      setCoin(state.user.coin);
+      setExp(state.user.exp);
+      setAvatarUrl(state.user.avatarUrl);
+    }
+  }, [state]);
   // Render
   return (
     <SafeAreaView
@@ -71,7 +128,8 @@ const AccountScreen = () => {
         <View style={styles.userImageContainer}>
           <TouchableOpacity onPress={toggleChangeAvatar}>
             <Image
-              source={require("../../assets/happy.gif")}
+              // source={{ uri: `../../assets/avatars/${avatarUrl}` }}
+              source={mapAvatar(avatarUrl)}
               style={styles.userImage}
               resizeMode={"contain"}
             />
@@ -85,7 +143,9 @@ const AccountScreen = () => {
       <View style={styles.form}>
         {/* Join day */}
         {/* TODO: fetch Join day */}
-        <Text style={styles.text}>Tham gia từ: 5/1/2021</Text>
+        <Text style={styles.text}>
+          Tham gia từ: {new Date(createdAt).toLocaleDateString()}
+        </Text>
         {/* fullName: Input */}
         <View
           style={{
@@ -137,7 +197,7 @@ const AccountScreen = () => {
                   color: "#29c7ac",
                 }}
               >
-                {/* fetch data here */}&nbsp;&nbsp;0
+                {/* fetch data here */}&nbsp;&nbsp;{exp}
               </Text>
             </View>
           </View>
@@ -157,7 +217,7 @@ const AccountScreen = () => {
                   marginLeft: 5,
                 }}
               >
-                &nbsp;&nbsp;0
+                &nbsp;&nbsp;{coin}
               </Text>
             </View>
           </View>
@@ -185,6 +245,27 @@ const AccountScreen = () => {
           <Text style={styles.buttonText}>ĐĂNG XUẤT</Text>
         </TouchableOpacity>
       </View>
+      <Snackbar
+        visible={state.updateUserSuccessMessage}
+        onDismiss={() => clearUpdateUserMessage()}
+        action={{
+          label: "Close",
+          onPress: () => {
+            clearUpdateUserMessage();
+          },
+        }}
+        style={{
+          backgroundColor: color.blue,
+          marginBottom: 60,
+          elevation: 10,
+        }}
+      >
+        <View>
+          <Text style={{ color: "white" }}>
+            {state.updateUserSuccessMessage}
+          </Text>
+        </View>
+      </Snackbar>
     </SafeAreaView>
   );
 };
