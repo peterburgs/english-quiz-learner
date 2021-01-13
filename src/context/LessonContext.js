@@ -12,7 +12,28 @@ const lessonReducer = (state, action) => {
           () => Math.random() - 0.5 //<== Magic code
         ),
       };
-
+    case "set_translate_answer":
+      return {
+        ...state,
+        translateAnswer: action.payload,
+      };
+    case "set_arrange_answer":
+      return {
+        ...state,
+        arrangeAnswer: action.payload,
+      };
+    case "set_single_selection_answer":
+      return {
+        ...state,
+        singleSelectionAnswer: action.payload,
+      };
+    case "answer_refreshed":
+      return {
+        ...state,
+        singleSelectionAnswer: null,
+        arrangeAnswer: [],
+        translateAnswer: "",
+      };
     default:
       return state;
   }
@@ -33,8 +54,35 @@ const getQuestions = (dispatch) => async (topicId, lessonOrder) => {
   }
 };
 
+const setTranslateAnswer = (dispatch) => (answer) => {
+  dispatch({ type: "set_translate_answer", payload: answer });
+};
+
+const setArrangeAnswer = (dispatch) => (answer) => {
+  dispatch({ type: "set_arrange_answer", payload: answer });
+};
+
+const setSingleSelectionAnswer = (dispatch) => (answer) => {
+  dispatch({ type: "set_single_selection_answer", payload: answer });
+};
+
+const answerRefreshed = (dispatch) => () => {
+  dispatch({ type: "answer_refreshed" });
+};
+
 export const { Provider, Context } = createDataContext(
   lessonReducer,
-  { getQuestions },
-  { questions: [] }
+  {
+    getQuestions,
+    setTranslateAnswer,
+    setSingleSelectionAnswer,
+    setArrangeAnswer,
+    answerRefreshed,
+  },
+  {
+    questions: [],
+    translateAnswer: "",
+    arrangeAnswer: [],
+    singleSelectionAnswer: null,
+  }
 );

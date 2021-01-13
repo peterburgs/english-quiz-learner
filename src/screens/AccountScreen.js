@@ -331,6 +331,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     top: 80,
     position: "absolute",
+    justifyContent: "center",
   },
   userImage: {
     aspectRatio: 0.9,
@@ -340,6 +341,8 @@ const styles = StyleSheet.create({
     width: WIDTH / 3,
     borderRadius: WIDTH / 3,
     overflow: "hidden",
+    alignSelf: "center",
+    marginTop: 2,
   },
   input: {
     fontSize: 10,

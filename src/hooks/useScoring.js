@@ -8,19 +8,16 @@ const useScoring = () => {
   // Find answer based on:
   // questions from DB
   // answers user made
-  const scoring = (
-    userAnswer,
-    questionType,
-    currentQuestionIndex
-  ) => {
+  const scoring = (questionType, currentQuestionIndex) => {
     switch (questionType) {
       // UserAnswer return "chosen order"
       case "singleSelection":
         return {
           userResult: state.questions[
             currentQuestionIndex
-          ].singleSelection.find((e) => e.order === userAnswer)
-            .isCorrect,
+          ].singleSelection.find(
+            (e) => e.order === state.singleSelectionAnswer
+          ).isCorrect,
           systemResult: state.questions[
             currentQuestionIndex
           ].singleSelection.find((e) => e.isCorrect === true).content,
@@ -31,17 +28,35 @@ const useScoring = () => {
           userResult:
             state.questions[currentQuestionIndex].translate.findIndex(
               (e) =>
-                e.content.toLowerCase() === userAnswer.toLowerCase()
+                e.content.toLowerCase() ===
+                state.translateAnswer.toLowerCase()
             ) !== -1,
           systemResult:
             state.questions[currentQuestionIndex].translate[0]
               .content,
         };
       case "arrange":
-        for (let i = 0; i < userAnswer.length; i++) {
+        if (
+          state.arrangeAnswer.length !==
+          state.questions[currentQuestionIndex].arrange.filter(
+            (e) => e.order !== "-1"
+          ).length
+        ) {
+          return {
+            userResult: false,
+            systemResult: state.questions[
+              currentQuestionIndex
+            ].arrange
+              .filter((e) => e.order !== "-1")
+              .sort((a, b) => parseInt(a.order) - parseInt(b.order))
+              .map((e) => e.word)
+              .join(" "),
+          };
+        }
+        for (let i = 0; i < state.arrangeAnswer.length; i++) {
           if (
-            parseInt(userAnswer[i].order) === -1 ||
-            parseInt(userAnswer[i].order) !== i + 1
+            parseInt(state.arrangeAnswer[i].order) === -1 ||
+            parseInt(state.arrangeAnswer[i].order) !== i + 1
           )
             return {
               userResult: false,

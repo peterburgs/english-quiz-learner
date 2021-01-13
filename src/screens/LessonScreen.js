@@ -12,6 +12,7 @@ import {
   LogBox,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
+import { Audio } from "expo-av";
 import _ from "lodash";
 // pacman
 import { PacmanIndicator } from "react-native-indicators";
@@ -40,7 +41,9 @@ import useScoring from "../hooks/useScoring";
 
 // LessonScreen
 const LessonScreen = ({ navigation }) => {
-  const { state, getQuestions } = useContext(LessonContext);
+  const { state: lessonState, getQuestions } = useContext(
+    LessonContext
+  );
   const {
     state: userState,
     getUser,
@@ -52,15 +55,39 @@ const LessonScreen = ({ navigation }) => {
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
+  // Sound
+  const [sound, setSound] = useState(null);
+
   // ProgressBar
   const [progress, setProgress] = useState(0);
 
   const topicId = navigation.getParam("topicId");
   const lessonOrder = navigation.getParam("lessonOrder");
 
+  // Handle play sound
+  const playSound = async (mode) => {
+    console.log("Loading Sound");
+    try {
+      const { sound: soundCorrect } = await Audio.Sound.createAsync(
+        require("../../assets/raw/correct.mp3")
+      );
+      const { sound: soundWrong } = await Audio.Sound.createAsync(
+        require("../../assets/raw/among_us.mp3")
+      );
+      setSound(mode === "correct" ? soundCorrect : soundWrong);
+      if (mode === "correct") {
+        await soundCorrect.playAsync();
+      } else {
+        await soundWrong.playAsync();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // Update header bar, update user. Navigate to finish screen at the end
   const handleCheck = async () => {
-    if (currentQuestionIndex < state.questions.length - 1) {
+    if (currentQuestionIndex < lessonState.questions.length - 1) {
       setCurrentQuestionIndex((pre) => pre + 1);
     } else {
       console.log("Finish lesson");
@@ -81,23 +108,19 @@ const LessonScreen = ({ navigation }) => {
       const clonedUser = _.cloneDeep(userState.user);
       const isHasX2 = userState.user.hasX2Exp ? 2 : 1;
       const isHasX5 = userState.user.hasX5Exp ? 5 : 1;
-      clonedUser.coin += scoreWeight;
-      clonedUser.exp += scoreWeight * 10 * isHasX2 * isHasX5;
-      console.log("clonedUser", clonedUser);
+      clonedUser.coin += correctAnswers * scoreWeight;
+      clonedUser.exp +=
+        correctAnswers * scoreWeight * 10 * isHasX2 * isHasX5;
       await updateUser(clonedUser);
       navigation.navigate("Finish", {
-        coin: scoreWeight,
-        exp: scoreWeight * 10 * isHasX2 * isHasX5,
+        coin: scoreWeight * correctAnswers,
+        exp: scoreWeight * 10 * correctAnswers * isHasX2 * isHasX5,
+        correctAnswers: correctAnswers,
+        totalQuestions: lessonState.questions.length,
       });
     }
   };
   const [correctAnswers, setCorrectAnswers] = useState(0);
-  let userAns = null;
-
-  // Keep track user answer
-  const handleUserAnswer = (item) => {
-    userAns = item;
-  };
 
   // Toggle Modal
   const [isModalVisible, setModalVisible] = useState(false);
@@ -114,36 +137,45 @@ const LessonScreen = ({ navigation }) => {
     if (!isModalVisible) {
       setUserResult(
         scoring(
-          userAns,
-          state.questions[currentQuestionIndex].type,
+          lessonState.questions[currentQuestionIndex].type,
           currentQuestionIndex
         ).userResult
       );
       setSystemResult(
         scoring(
-          userAns,
-          state.questions[currentQuestionIndex].type,
+          lessonState.questions[currentQuestionIndex].type,
           currentQuestionIndex
         ).systemResult
       );
       setProgress((pre) => {
-        return pre + 1 / state.questions.length;
+        return pre + 1 / lessonState.questions.length;
       });
       if (
         scoring(
-          userAns,
-          state.questions[currentQuestionIndex].type,
+          lessonState.questions[currentQuestionIndex].type,
           currentQuestionIndex
         ).userResult
       ) {
         setCorrectAnswers((pre) => pre + 1);
+        await playSound("correct");
+      } else {
+        await playSound("wrong");
       }
     }
   };
 
+  // Enable playback in silence mode
+  // Sound.setCategory("Playback");
+
   useEffect(() => {
     getUser();
-  }, []);
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   return (
     <SafeAreaView
@@ -153,27 +185,31 @@ const LessonScreen = ({ navigation }) => {
       <Header
         progress={progress}
         currentQuestion={currentQuestionIndex + 1}
-        totalQuestion={state.questions.length}
+        totalQuestion={lessonState.questions.length}
         navigation={navigation}
       />
 
       <QuestionText
         questionRequirement={
-          state.questions[currentQuestionIndex].questionRequirement
+          lessonState.questions[currentQuestionIndex]
+            .questionRequirement
         }
         questionText={
-          state.questions[currentQuestionIndex].questionText
+          lessonState.questions[currentQuestionIndex].questionText
         }
-        imageUrl={state.questions[currentQuestionIndex].imageUrl}
+        imageUrl={
+          lessonState.questions[currentQuestionIndex].imageUrl
+        }
       />
       <UserAnswer
-        onUserAnswer={handleUserAnswer}
-        type={state.questions[currentQuestionIndex].type}
+        type={lessonState.questions[currentQuestionIndex].type}
         singleSelection={
-          state.questions[currentQuestionIndex].singleSelection
+          lessonState.questions[currentQuestionIndex].singleSelection
         }
-        translate={state.questions[currentQuestionIndex].translate}
-        arrange={state.questions[currentQuestionIndex].arrange}
+        translate={
+          lessonState.questions[currentQuestionIndex].translate
+        }
+        arrange={lessonState.questions[currentQuestionIndex].arrange}
       />
       {/* Modal */}
       <Modal

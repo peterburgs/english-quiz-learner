@@ -163,7 +163,7 @@ const TopicScreen = ({ navigation }) => {
                   handlePressLesson(1, currentTopicId);
                 }}
               >
-                <Text style={styles.textStyle}>Lesson 1</Text>
+                <Text style={styles.textStyle}>Easy</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -175,7 +175,7 @@ const TopicScreen = ({ navigation }) => {
                   handlePressLesson(2, currentTopicId);
                 }}
               >
-                <Text style={styles.textStyle}>Lesson 2</Text>
+                <Text style={styles.textStyle}>Medium</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -187,7 +187,7 @@ const TopicScreen = ({ navigation }) => {
                   handlePressLesson(3, currentTopicId);
                 }}
               >
-                <Text style={styles.textStyle}>Lesson 3</Text>
+                <Text style={styles.textStyle}>Hard</Text>
               </TouchableOpacity>
             </View>
           </View>

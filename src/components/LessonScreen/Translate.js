@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,11 +13,18 @@ import color from "../../common/color";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
-const Translate = ({ onUserAnswer }) => {
-  const [value, setValue] = useState("");
+// Context
+import { Context as LessonContext } from "../../context/LessonContext";
+
+const Translate = () => {
+  const { state: lessonState, setTranslateAnswer } = useContext(
+    LessonContext
+  );
+
   return (
     <View style={styles.textAreaContainer}>
       <TextInput
+        autoFocus={true}
         style={styles.textArea}
         underlineColorAndroid="transparent"
         placeholderTextColor="grey"
@@ -25,10 +32,9 @@ const Translate = ({ onUserAnswer }) => {
         multiline={true}
         placeholder={"Nhập câu trả lời..."}
         onChangeText={(text) => {
-          setValue(text);
-          onUserAnswer(text);
+          setTranslateAnswer(text);
         }}
-        value={value}
+        value={lessonState.translateAnswer}
       />
     </View>
   );

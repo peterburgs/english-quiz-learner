@@ -1,6 +1,6 @@
 LogBox.ignoreAllLogs();
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -12,6 +12,7 @@ import {
   LogBox,
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
+import { Audio } from "expo-av";
 
 // Import Icons
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -27,10 +28,42 @@ const FinishScreen = ({ navigation }) => {
   const { state } = useContext(UserContext);
   const coin = navigation.getParam("coin");
   const exp = navigation.getParam("exp");
+  const correctAnswers = navigation.getParam("correctAnswers");
+  const totalQuestions = navigation.getParam("totalQuestions");
+  // Sound
+  const [sound, setSound] = useState(null);
+
+  // Handle play sound
+  const playSound = async () => {
+    console.log("Loading Sound");
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../assets/raw/yay.mp3")
+      );
+      setSound(sound);
+      await sound.playAsync();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleFinish = () => {
     // Go back to Topic screen
     navigation.navigate("Topic");
   };
+
+  useEffect(() => {
+    (async () => {
+      await playSound();
+    })();
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, []);
+
   return (
     <SafeAreaView
       forceInset={{ top: "always" }}
@@ -42,6 +75,10 @@ const FinishScreen = ({ navigation }) => {
       />
       <Text style={styles.title}>Bạn đã hoàn thành 1 bài học!</Text>
 
+      {/* TODO: number of correct question/all */}
+      <Text style={{ ...styles.title, fontSize: 16 }}>
+        Số câu trả lời đúng: {correctAnswers}/{totalQuestions}
+      </Text>
       {/* Result of this lesson */}
       <View
         style={{
