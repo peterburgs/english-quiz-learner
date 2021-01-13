@@ -103,7 +103,7 @@ const signup = (dispatch) => async ({ email, password }) => {
     });
     dispatch({
       type: "add_error",
-      payload: err.toString(),
+      payload: "Invalid or Existed email!",
     });
   }
 };

@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+} from "react";
 import {
   StyleSheet,
   Text,
@@ -15,6 +20,9 @@ import SingleSelection from "./SingleSelection";
 import Translate from "./Translate";
 import Arrange from "./Arrange";
 
+// Context
+import { Context as LessonContext } from "../../context/LessonContext";
+
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 const handleCheck = () => {
@@ -25,12 +33,15 @@ const UserAnswer = ({
   singleSelection,
   translate,
   arrange,
-  onUserAnswer,
 }) => {
   // Clone arrange
-  const [data, setData] = useState(arrange);
+  const [data, setData] = useState([]);
 
-  const [submitData, setSubmitData] = useState([]);
+  const {
+    state: lessonState,
+    setArrangeAnswer,
+    answerRefreshed,
+  } = useContext(LessonContext);
 
   const handleData = (_id) => {
     const _clonedWord = _.cloneDeep(
@@ -40,21 +51,19 @@ const UserAnswer = ({
     );
     if (_clonedWord) {
       // Add word to submit box
-      const newSubmitData = _.cloneDeep(submitData);
+      const newSubmitData = _.cloneDeep(lessonState.arrangeAnswer);
       newSubmitData.push(_clonedWord);
-      setSubmitData(newSubmitData);
+      setArrangeAnswer(newSubmitData);
       // Remove word from box
       const newData = _.cloneDeep(data);
       const index = newData.findIndex((e) => e._id === _id);
       newData.splice(index, 1);
       setData(newData);
-      // Send user answer
-      onUserAnswer(newSubmitData);
     }
   };
   const handleSubmitData = (_id) => {
     const _clonedWord = _.cloneDeep(
-      submitData.find((e) => {
+      lessonState.arrangeAnswer.find((e) => {
         return e._id === _id;
       })
     );
@@ -64,40 +73,39 @@ const UserAnswer = ({
       newData.push(_clonedWord);
       setData(newData);
       // Remove word from submit box
-      const newSubmitData = _.cloneDeep(submitData);
+      const newSubmitData = _.cloneDeep(lessonState.arrangeAnswer);
       const index = newSubmitData.findIndex((e) => e._id === _id);
       newSubmitData.splice(index, 1);
-      setSubmitData(newSubmitData);
-      // Send user answer
-      onUserAnswer(newSubmitData);
+      setArrangeAnswer(newSubmitData);
     }
   };
   const RenderItem = ({ type }) => {
     switch (type) {
       case "singleSelection":
-        return (
-          <SingleSelection
-            onUserAnswer={onUserAnswer}
-            selections={singleSelection}
-          />
-        );
+        return <SingleSelection selections={singleSelection} />;
       case "translate":
-        return <Translate onUserAnswer={onUserAnswer} />;
+        return <Translate />;
       case "arrange":
         return (
           <Arrange
             data={data}
-            submitData={submitData}
+            submitData={lessonState.arrangeAnswer}
             handleData={handleData}
             handleSubmitData={handleSubmitData}
           />
         );
     }
   };
+
   useEffect(() => {
-    setData(arrange);
-    setSubmitData([]);
+    setData(_.cloneDeep(arrange));
+    return () => {
+      answerRefreshed();
+    };
   }, [arrange]);
+
+  console.log("[UserAnswer.js] render");
+
   return (
     <View style={styles.container}>
       <RenderItem type={type} />

@@ -57,17 +57,19 @@ const Arrange = ({
     <View style={styles.container}>
       {/*Submit Box*/}
       <View style={styles.submitBoxContainer}>
-        {submitData.map((item, index) => {
-          if (submitData.length > 0)
-            return (
-              <SubmitBox
-                word={item.word}
-                key={item._id}
-                handleSubmitData={handleSubmitData}
-                _id={item._id}
-              />
-            );
-        })}
+        {submitData
+          ? submitData.map((item, index) => {
+              if (submitData.length > 0)
+                return (
+                  <SubmitBox
+                    word={item.word}
+                    key={item._id}
+                    handleSubmitData={handleSubmitData}
+                    _id={item._id}
+                  />
+                );
+            })
+          : null}
       </View>
 
       {/* Data Box*/}

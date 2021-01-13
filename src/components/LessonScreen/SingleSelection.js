@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,9 +13,15 @@ import color from "../../common/color";
 // Device spec
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("screen");
 
-const SingleSelection = ({ selections, onUserAnswer }) => {
-  // State
-  const [selectedItem, setSelectedItem] = useState(null);
+// Context
+import { Context as LessonContext } from "../../context/LessonContext";
+
+const SingleSelection = ({ selections }) => {
+  const { state: lessonState, setSingleSelectionAnswer } = useContext(
+    LessonContext
+  );
+
+  console.log("render");
 
   // Define single selection item
   const Item = ({ item, onPress, style, textColor }) => (
@@ -33,16 +39,19 @@ const SingleSelection = ({ selections, onUserAnswer }) => {
   // Render Item
   const renderItem = ({ item }) => {
     const backgroundColor =
-      item.order === selectedItem
+      item.order === lessonState.singleSelectionAnswer
         ? color.singleSelectionSelected
         : color.singleSelection;
-    const textColor = item.order === selectedItem ? "#fff" : "#000";
+    const textColor =
+      item.order === lessonState.singleSelectionAnswer
+        ? "#fff"
+        : "#000";
     return (
       <Item
         item={item}
         // TODO: handle press a selection
         onPress={() => {
-          setSelectedItem(item.order);
+          setSingleSelectionAnswer(item.order);
         }}
         style={{ backgroundColor }}
         textColor={textColor}
@@ -50,17 +59,13 @@ const SingleSelection = ({ selections, onUserAnswer }) => {
     );
   };
 
-  useEffect(() => {
-    onUserAnswer(selectedItem);
-  }, [selectedItem]);
-
   return (
     <View>
       <FlatList
         data={selections}
         renderItem={renderItem}
         keyExtractor={(item) => item.order.toString()}
-        extraData={selectedItem}
+        extraData={lessonState.singleSelectionAnswer}
       />
     </View>
   );
